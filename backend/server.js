@@ -1,18 +1,35 @@
-// backend/server.js
-const express = require('express');
-const cors = require('cors');
+const express = require("express");
 const app = express();
-const port = 5000; // Puerto para el back-end
+const cors = require("cors");
+const dotenv = require("dotenv");
+dotenv.config();
 
-app.use(cors()); // Habilita CORS
-app.use(express.json()); // Para parsear JSON en las solicitudes
+// Middleware
+app.use(express.json());
+app.use(cors());
 
-// Ruta de ejemplo
-app.get('/api', (req, res) => {
-  res.json({ message: '¡Hola desde el servidor Express!' });
-});
+// Rutas
+const userRoutes = require("./routes/usuarioRoutes");
+const productoRoutes = require("./routes/productosRoutes");
+const categoriaRoutes = require("./routes/categoriasRoutes");
+const mesasRoutes = require("./routes/mesasRoutes");
+const pedidos = require("./routes/pedidoRoutes");
+const facturacion = require("./routes/facturacionRoutes");
+const menu = require("./routes/menuRoutes");
+const empleados = require("./routes/empleadosRoutes");
+// Otras rutas para usuarios, pedidos, etc. pueden añadirse de manera similar
 
-// Inicia el servidor
-app.listen(port, () => {
-  console.log(`Servidor Express escuchando en http://localhost:${port}`);
+app.use("/api/productos", productoRoutes);
+app.use("/api/usuarios", userRoutes);
+app.use("/api/categorias", categoriaRoutes);
+app.use("/api/mesas", mesasRoutes);
+app.use("/api/pedidos", pedidos);
+app.use("/api/factura", facturacion);
+app.use("/api/menu", menu);
+app.use("/api/empleados", empleados);
+
+// Iniciar servidor
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en puerto ${PORT}`);
 });

@@ -17,6 +17,10 @@ const pedidos = require("./routes/pedidoRoutes");
 const facturacion = require("./routes/facturacionRoutes");
 const menu = require("./routes/menuRoutes");
 const empleados = require("./routes/empleadosRoutes");
+const inventario = require("./routes/inventarioRoutes");
+const historialInventario = require("./routes/historialIventarioRoutes");
+const reservas = require("./routes/reservasRoutes");
+const pagos = require("./routes/pagosRoutes");
 // Otras rutas para usuarios, pedidos, etc. pueden añadirse de manera similar
 
 app.use("/api/productos", productoRoutes);
@@ -27,6 +31,10 @@ app.use("/api/pedidos", pedidos);
 app.use("/api/factura", facturacion);
 app.use("/api/menu", menu);
 app.use("/api/empleados", empleados);
+app.use("/api/inventario", inventario);
+app.use("/api/historial-inventario", historialInventario);
+app.use("/api/reservas", reservas);
+app.use("/api/pagos", pagos);
 
 // Iniciar servidor
 const PORT = process.env.PORT || 5000;

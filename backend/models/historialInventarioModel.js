@@ -1,7 +1,6 @@
 // models/historialInventarioModel.js
 const db = require("../config/db"); // Configuración de la conexión a la base de datos
 
-
 const historialInventarioModel = {
   async getAll() {
     const query = "SELECT * FROM historial_inventario";
@@ -11,7 +10,7 @@ const historialInventarioModel = {
 
   async getById(id) {
     const query = "SELECT * FROM historial_inventario WHERE id = ?";
-    const [rows] = await db.query(query, [id]);
+    const [rows] = await db.promise().query(query, [id]);
     return rows[0];
   },
 
@@ -21,12 +20,9 @@ const historialInventarioModel = {
       VALUES (?, ?, ?, ?)
     `;
     const { producto_id, cantidad_cambiada, motivo, fecha_cambio } = data;
-    const [result] = await db.query(query, [
-      producto_id,
-      cantidad_cambiada,
-      motivo,
-      fecha_cambio,
-    ]);
+    const [result] = await db
+      .promise()
+      .query(query, [producto_id, cantidad_cambiada, motivo, fecha_cambio]);
     return { id: result.insertId, ...data };
   },
 
@@ -37,19 +33,15 @@ const historialInventarioModel = {
       WHERE id = ?
     `;
     const { producto_id, cantidad_cambiada, motivo, fecha_cambio } = data;
-    await db.query(query, [
-      producto_id,
-      cantidad_cambiada,
-      motivo,
-      fecha_cambio,
-      id,
-    ]);
+    await db
+      .promise()
+      .query(query, [producto_id, cantidad_cambiada, motivo, fecha_cambio, id]);
     return { id, ...data };
   },
 
   async delete(id) {
     const query = "DELETE FROM historial_inventario WHERE id = ?";
-    await db.query(query, [id]);
+    await db.promise().query(query, [id]);
   },
 };
 

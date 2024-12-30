@@ -8,13 +8,13 @@ const getAllPagos = async () => {
 
 // Modelo para obtener un pago por su ID
 const getPagoById = async (id) => {
-  const [rows] = await db.query("SELECT * FROM pagos WHERE id = ?", [id]);
+  const [rows] = await db.promise().query("SELECT * FROM pagos WHERE id = ?", [id]);
   return rows[0]; // Devuelve el primer resultado (o null si no se encuentra)
 };
 
 // Modelo para crear un nuevo pago
 const createPago = async (monto, fecha_pago, metodo_pago, reserva_id) => {
-  const [result] = await db.query(
+  const [result] = await db.promise().query(
     "INSERT INTO pagos (monto, fecha_pago, metodo_pago, reserva_id) VALUES (?, ?, ?, ?)",
     [monto, fecha_pago, metodo_pago, reserva_id]
   );
@@ -23,7 +23,7 @@ const createPago = async (monto, fecha_pago, metodo_pago, reserva_id) => {
 
 // Modelo para actualizar un pago
 const updatePago = async (id, monto, fecha_pago, metodo_pago, reserva_id) => {
-  await db.query(
+  await db.promise().query(
     "UPDATE pagos SET monto = ?, fecha_pago = ?, metodo_pago = ?, reserva_id = ? WHERE id = ?",
     [monto, fecha_pago, metodo_pago, reserva_id, id]
   );
@@ -32,7 +32,7 @@ const updatePago = async (id, monto, fecha_pago, metodo_pago, reserva_id) => {
 
 // Modelo para eliminar un pago
 const deletePago = async (id) => {
-  await db.query("DELETE FROM pagos WHERE id = ?", [id]);
+  await db.promise().query("DELETE FROM pagos WHERE id = ?", [id]);
   return id; // Devuelve el ID del pago eliminado
 };
 

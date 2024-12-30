@@ -1,5 +1,6 @@
 const db = require("../config/db"); // Asegúrate de importar tu conexión con la base de datos
 
+
 // Modelo para obtener todas las reservas
 const getAllReservas = async () => {
   const [rows] = await db.promise().query("SELECT * FROM reservas");
@@ -8,7 +9,9 @@ const getAllReservas = async () => {
 
 // Modelo para obtener una reserva por su ID
 const getReservaById = async (id) => {
-  const [rows] = await db.query("SELECT * FROM reservas WHERE id = ?", [id]);
+  const [rows] = await db
+    .promise()
+    .query("SELECT * FROM reservas WHERE id = ?", [id]);
   return rows[0]; // Devuelve el primer resultado (o null si no se encuentra)
 };
 
@@ -19,7 +22,7 @@ const createReserva = async (
   hora_reserva,
   usuario_id
 ) => {
-  const [result] = await db.query(
+  const [result] = await db.promise().query(
     "INSERT INTO reservas (mesa_id, fecha_reserva, hora_reserva, usuario_id) VALUES (?, ?, ?, ?)",
     [mesa_id, fecha_reserva, hora_reserva, usuario_id]
   );
@@ -34,7 +37,7 @@ const updateReserva = async (
   hora_reserva,
   usuario_id
 ) => {
-  await db.query(
+  await db.promise().query(
     "UPDATE reservas SET mesa_id = ?, fecha_reserva = ?, hora_reserva = ?, usuario_id = ? WHERE id = ?",
     [mesa_id, fecha_reserva, hora_reserva, usuario_id, id]
   );
@@ -43,7 +46,7 @@ const updateReserva = async (
 
 // Modelo para eliminar una reserva
 const deleteReserva = async (id) => {
-  await db.query("DELETE FROM reservas WHERE id = ?", [id]);
+  await db.promise().query("DELETE FROM reservas WHERE id = ?", [id]);
   return id; // Devuelve el ID de la reserva eliminada
 };
 

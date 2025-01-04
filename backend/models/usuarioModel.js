@@ -1,5 +1,7 @@
 // models/userModel.js
+const bcrypt = require("bcrypt");
 const connection = require("../config/db");
+const { hashPassword } = require("../utils/hash");
 
 // Modelo para la tabla de usuarios
 const usuario = {
@@ -120,6 +122,26 @@ const usuario = {
           if (err) {
             reject(err);
           } else {
+            resolve(results.affectedRows);
+          }
+        }
+      );
+    });
+  },
+
+  //update password
+  updatePassword: (id, newPassword) => {
+    return new Promise(async (resolve, reject) => {
+      const hash = await hashPassword(newPassword);
+      connection.query(
+        "UPDATE usuarios SET password_hash = ? WHERE id = ?",
+        [hash, id],
+        (err, results) => {
+          if (err) {
+            reject(err);
+          } else {
+            console.log(results);
+            console.log(results.affectedRows);
             resolve(results.affectedRows);
           }
         }

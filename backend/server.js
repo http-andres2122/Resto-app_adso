@@ -21,6 +21,7 @@ const inventario = require("./routes/inventarioRoutes");
 const historialInventario = require("./routes/historialIventarioRoutes");
 const reservas = require("./routes/reservasRoutes");
 const pagos = require("./routes/pagosRoutes");
+const login = require("./auth/authRoutes");
 // Otras rutas para usuarios, pedidos, etc. pueden añadirse de manera similar
 
 app.use("/api/productos", productoRoutes);
@@ -35,6 +36,7 @@ app.use("/api/inventario", inventario);
 app.use("/api/historial-inventario", historialInventario);
 app.use("/api/reservas", reservas);
 app.use("/api/pagos", pagos);
+app.use("/api/auth", login);
 
 // Iniciar servidor
 const PORT = process.env.PORT || 5000;

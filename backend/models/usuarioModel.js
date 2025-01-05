@@ -1,5 +1,4 @@
 // models/userModel.js
-const bcrypt = require("bcrypt");
 const connection = require("../config/db");
 const { hashPassword } = require("../utils/hash");
 
@@ -16,6 +15,21 @@ const usuario = {
         }
       });
     });
+  },
+
+  // Obtener un usuario por email
+  findUserByEmail: async (email) => {
+    try {
+      const query = "SELECT * FROM usuarios WHERE email = ?";
+      const [rows] = await connection.promise().execute(query, [email]);
+      if (rows.length > 0) {
+        return rows[0]; // Retorna el primer usuario que coincida con el email
+      } else {
+        return null; // Si no se encuentra el usuario, retorna null
+      }
+    } catch (error) {
+      throw new Error("Error al buscar el usuario por email: " + error.message);
+    }
   },
 
   // Obtener un usuario por ID
@@ -36,41 +50,41 @@ const usuario = {
   },
 
   // Crear un nuevo usuario
-  createUser: (userData) => {
-    return new Promise((resolve, reject) => {
+  createUser: async (userData) => {
+    try {
       const {
         username,
         email,
-        password_hash,
-        first_name,
-        last_name,
-        num_doc,
-        tpe_doc,
+        password,
+        first_name = null,
+        last_name = null,
+        num_doc = null,
+        tpe_doc = null,
         num_phone,
       } = userData;
+      //hash password
+      const pwdhash = await hashPassword(password);
+      //query in sql
       const query =
         "INSERT INTO usuarios (username, email, password_hash, first_name, last_name, num_doc, tpe_doc, num_phone) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-      connection.query(
-        query,
-        [
+      //connect to db
+      const [results] = await connection
+        .promise()
+        .query(query, [
           username,
           email,
-          password_hash,
+          pwdhash,
           first_name,
           last_name,
           num_doc,
           tpe_doc,
           num_phone,
-        ],
-        (err, results) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(results.insertId);
-          }
-        }
-      );
-    });
+        ]);
+      return results.insertId;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
   },
 
   // Actualizar un usuario existente
@@ -79,7 +93,6 @@ const usuario = {
       const {
         username,
         email,
-        password_hash,
         first_name,
         last_name,
         num_doc,
@@ -87,13 +100,12 @@ const usuario = {
         num_phone,
       } = userData;
       const query =
-        "UPDATE usuarios SET username = ?, email = ?, password_hash = ?, first_name = ?, last_name = ?, num_doc = ?, tpe_doc = ?, num_phone = ? WHERE id = ?";
+        "UPDATE usuarios SET username = ?, email = ?, first_name = ?, last_name = ?, num_doc = ?, tpe_doc = ?, num_phone = ? WHERE id = ?";
       connection.query(
         query,
         [
           username,
           email,
-          password_hash,
           first_name,
           last_name,
           num_doc,
@@ -130,23 +142,25 @@ const usuario = {
   },
 
   //update password
-  updatePassword: (id, newPassword) => {
-    return new Promise(async (resolve, reject) => {
+  updatePassword: async (id, newPassword) => {
+    try {
+      // Hash password
       const hash = await hashPassword(newPassword);
-      connection.query(
-        "UPDATE usuarios SET password_hash = ? WHERE id = ?",
-        [hash, id],
-        (err, results) => {
-          if (err) {
-            reject(err);
-          } else {
-            console.log(results);
-            console.log(results.affectedRows);
-            resolve(results.affectedRows);
-          }
-        }
-      );
-    });
+
+      // Usando mysql2 con promesas
+      const [results] = await connection
+        .promise()
+        .query("UPDATE usuarios SET password_hash = ? WHERE id = ?", [
+          hash,
+          id,
+        ]);
+
+      // Devuelve el número de filas afectadas
+      return results.affectedRows;
+    } catch (error) {
+      console.log(error);
+      throw error; // Se lanza el error para que lo maneje el manejador global de errores
+    }
   },
 };
 

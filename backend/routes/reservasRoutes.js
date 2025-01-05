@@ -4,7 +4,7 @@ const reservasController = require("../controllers/reservasController");
 const router = express.Router();
 
 // Ruta para obtener todas las reservas
-router.get("/", reservasController.getAllReservas);
+// router.get("/", reservasController.getAllReservas);
 
 // Ruta para obtener una reserva por su ID
 router.get("/:id", reservasController.getReservaById);

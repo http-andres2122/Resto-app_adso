@@ -8,6 +8,15 @@ const CustomError = require("./utils/customError");
 const auth = require("./middlewares/auth");
 const role = require("./middlewares/role");
 
+// Controladores
+const { obtenerMenu } = require("./controllers/menuController");
+const { getAllProductos } = require("./controllers/productosController");
+const {
+  getAllReservas,
+  createReserva,
+} = require("./controllers/reservasController");
+const { createPago } = require("./controllers/pagosController");
+
 // Middleware
 app.use(express.json());
 app.use(cors());
@@ -32,20 +41,37 @@ const reservas = require("./routes/reservasRoutes");
 const pagos = require("./routes/pagosRoutes");
 const login = require("./auth/authRoutes");
 
-// Otras rutas para usuarios, pedidos, etc. pueden añadirse de manera similar
-app.use("/api/productos", productoRoutes);
+// rutas publicas
+app.get("/api/productos", getAllProductos); //public GET
+app.get("/api/menu", obtenerMenu); // public GET
+app.get("/api/reservas", getAllReservas); // public GET
+// app.post("/api/reservas", createReserva); // public POST
+app.post("/api/pagos", auth, createPago); // public POST
+
+//rutas api
+app.use("/api/productos", auth, role(1), productoRoutes);
 app.use("/api/usuarios", auth, role(1), userRoutes);
-app.use("/api/categorias", categoriaRoutes);
-app.use("/api/mesas", mesasRoutes);
-app.use("/api/pedidos", pedidos);
-app.use("/api/factura", auth, role(1), facturacion);
-app.use("/api/menu", menu);
+app.use("/api/categorias", auth, role(1), categoriaRoutes);
+app.use("/api/mesas", auth, role(1, 2), mesasRoutes);
+app.use("/api/pedidos", auth, role(1, 2), pedidos);
+app.use("/api/factura", auth, role(1, 2), facturacion);
+app.use("/api/menu", auth, role(1), menu);
 app.use("/api/empleados", auth, role(1), empleados);
-app.use("/api/inventario", inventario);
-app.use("/api/historial-inventario", historialInventario);
-app.use("/api/reservas", reservas);
+app.use("/api/inventario", auth, role(1), inventario);
+app.use("/api/historial-inventario", auth, role(1), historialInventario);
+app.use("/api/reservas", auth, role(1), reservas);
 app.use("/api/pagos", auth, role(1), pagos);
-app.use("/api/auth", login);
+app.use("/api/auth", login); //public login and register POST only
+app.use("/api", (req, res) => {
+  res.status(401).json({
+    message: "Bienvenido a la API de restaurante :)",
+  });
+});
+app.use("/", (req, res) => {
+  res.status(401).json({
+    message: "Bienvenido a la API de restaurante :)",
+  });
+});
 
 // Manejador global de errores
 app.use(errorHandler);

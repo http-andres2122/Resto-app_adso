@@ -4,7 +4,7 @@ const router = express.Router();
 const menuController = require("../controllers/menuController"); // Importamos el controlador de menú
 
 // Obtener todo el menú
-router.get("/", menuController.obtenerMenu);
+// router.get("/", menuController.obtenerMenu);
 
 // Obtener un producto del menú por ID
 router.get("/:id", menuController.obtenerMenuPorId);

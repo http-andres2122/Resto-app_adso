@@ -19,7 +19,7 @@ const login = async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({ message: "Credenciales inválidas" });
     }
-
+    // Generar token
     const token = generateToken(user);
     console.log('token auth controller:',token);
     console.log('user auth controller:',user);

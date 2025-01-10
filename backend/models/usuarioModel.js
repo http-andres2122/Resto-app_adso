@@ -1,6 +1,6 @@
 // models/userModel.js
-const connection = require("../config/db");
-const { hashPassword } = require("../utils/hash");
+import connection from "../config/db.js";
+import hashPassword from "../utils/hash.js";
 
 // Modelo para la tabla de usuarios
 const usuario = {
@@ -164,4 +164,4 @@ const usuario = {
   },
 };
 
-module.exports = usuario;
+export default usuario;

@@ -1,6 +1,6 @@
 // models/empleadosModel.js
-const { query } = require("express");
-const connection = require("../config/db");
+// Importar la conexión a la base de datos
+import connection from "../config/db.js";
 
 const empleados = {
   // Obtener todos los empleados
@@ -119,4 +119,4 @@ const empleados = {
   },
 };
 
-module.exports = empleados;
+export default empleados;

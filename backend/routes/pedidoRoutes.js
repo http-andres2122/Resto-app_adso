@@ -1,9 +1,10 @@
 // routes/pedidoRoutes.js
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const auth = require("../middlewares/auth");
-const role = require("../middlewares/role");
-const pedidoController = require("../controllers/pedidoController"); // Importamos el controlador de pedidos
+import auth from "../middlewares/auth.js";
+import role from "../middlewares/role.js";
+import pedidoController from "../controllers/pedidoController.js";
+// Importamos el controlador de pedidos
 
 // Obtener todos los pedidos
 router.get("/", pedidoController.obtenerPedidos); //auth and role
@@ -20,4 +21,4 @@ router.put("/:id", pedidoController.actualizarPedido);
 // Eliminar un pedido
 router.delete("/:id", pedidoController.eliminarPedido);
 
-module.exports = router;
+export default router;

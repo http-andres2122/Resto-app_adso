@@ -1,4 +1,4 @@
-const reservasModel = require("../models/revervasModel");
+import reservasModel from "../models/revervasModel.js";
 
 // Controlador para obtener todas las reservas
 const getAllReservas = async (req, res) => {
@@ -78,7 +78,7 @@ const deleteReserva = async (req, res) => {
   }
 };
 
-module.exports = {
+export default {
   getAllReservas,
   getReservaById,
   createReserva,

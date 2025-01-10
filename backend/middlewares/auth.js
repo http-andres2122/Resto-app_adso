@@ -1,5 +1,6 @@
-const jwt = require("jsonwebtoken");
+import verifyToken from "../utils/jwt.js"; // Importar la utilidad
 
+// Middleware de autenticación
 const auth = (req, res, next) => {
   // Obtén el encabezado de autorización
   const authHeader = req.headers.authorization;
@@ -16,16 +17,17 @@ const auth = (req, res, next) => {
   const token = authHeader.split(" ")[1];
 
   try {
-    // Verifica el token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    // Verifica el token usando la utilidad
+    const decoded = verifyToken(token);
     req.user = decoded; // Agrega los datos decodificados al objeto `req`
+    console.log("Auth decoded token:", decoded);
     next(); // Continúa al siguiente middleware
   } catch (err) {
     return res.status(401).json({
       success: false,
-      message: "Token inválido o expirado",
+      message: err.message, // Mensaje desde la utilidad
     });
   }
 };
 
-module.exports = auth;
+export default auth;

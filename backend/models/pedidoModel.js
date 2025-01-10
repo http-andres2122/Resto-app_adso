@@ -1,5 +1,5 @@
 // models/pedido.js
-const connection = require("../config/db"); // Conexión a la base de datos
+import connection from "../config/db.js"; // Conexión a la base de datos
 
 const pedido = {
   obtenerPedidos: (callback) => {
@@ -31,4 +31,4 @@ const pedido = {
   },
 };
 
-module.exports = pedido;
+export default pedido;

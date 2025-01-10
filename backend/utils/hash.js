@@ -1,4 +1,5 @@
-const bcrypt = require("bcrypt");
+import bcrypt from "bcrypt";
+
 
 /**
  * Función para generar una contraseña hasheada
@@ -11,4 +12,4 @@ const hashPassword = async (plainPassword) => {
   return hashedPassword;
 };
 
-module.exports = { hashPassword };
+export default hashPassword;

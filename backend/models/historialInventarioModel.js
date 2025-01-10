@@ -1,5 +1,5 @@
 // models/historialInventarioModel.js
-const db = require("../config/db"); // Configuración de la conexión a la base de datos
+import db from "../config/db.js"; // Configuración de la conexión a la base de datos
 
 const historialInventarioModel = {
   async getAll() {
@@ -45,4 +45,4 @@ const historialInventarioModel = {
   },
 };
 
-module.exports = historialInventarioModel;
+export default historialInventarioModel;

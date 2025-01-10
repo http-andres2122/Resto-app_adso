@@ -1,7 +1,8 @@
 // routes/userRoutes.js
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const usuarioController = require("../controllers/usuarioController");
+import usuarioController from "../controllers/usuarioController.js";
+
 // const verifyToken = require("../middlewares/auth");
 
 // Rutas para usuarios
@@ -12,4 +13,4 @@ router.put("/:id", usuarioController.updateUser); // Actualizar un usuario
 router.delete("/:id", usuarioController.deleteUser); // Eliminar un usuario
 router.put("/upPasswd/:id", usuarioController.updatePassword); // Actualizar la contraseña de un usuario
 
-module.exports = router;
+export default router;

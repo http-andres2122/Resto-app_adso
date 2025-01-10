@@ -1,4 +1,4 @@
-const Producto = require("../models/productosModel");
+import Producto from "../models/productosModel.js";
 
 const productosController = {
   // Obtener todos los productos
@@ -51,4 +51,4 @@ const productosController = {
   },
 };
 
-module.exports = productosController;
+export default productosController;

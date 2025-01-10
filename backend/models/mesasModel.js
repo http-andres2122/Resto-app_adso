@@ -1,5 +1,5 @@
 // mesas.js (Modelo)
-const connection = require("../config/db");
+import connection from "../config/db.js";
 
 const mesas = {
   obtenerMesas: (callback) => {
@@ -31,4 +31,4 @@ const mesas = {
   },
 };
 
-module.exports = mesas;
+export default mesas;

@@ -1,5 +1,4 @@
-const db = require("../config/db"); // Asegúrate de importar tu conexión con la base de datos
-
+import db from "../config/db.js"; // Asegúrate de importar tu conexión con la base de datos
 
 // Modelo para obtener todas las reservas
 const getAllReservas = async () => {
@@ -22,10 +21,12 @@ const createReserva = async (
   hora_reserva,
   usuario_id
 ) => {
-  const [result] = await db.promise().query(
-    "INSERT INTO reservas (mesa_id, fecha_reserva, hora_reserva, usuario_id) VALUES (?, ?, ?, ?)",
-    [mesa_id, fecha_reserva, hora_reserva, usuario_id]
-  );
+  const [result] = await db
+    .promise()
+    .query(
+      "INSERT INTO reservas (mesa_id, fecha_reserva, hora_reserva, usuario_id) VALUES (?, ?, ?, ?)",
+      [mesa_id, fecha_reserva, hora_reserva, usuario_id]
+    );
   return result.insertId; // Devuelve el ID de la reserva recién creada
 };
 
@@ -37,10 +38,12 @@ const updateReserva = async (
   hora_reserva,
   usuario_id
 ) => {
-  await db.promise().query(
-    "UPDATE reservas SET mesa_id = ?, fecha_reserva = ?, hora_reserva = ?, usuario_id = ? WHERE id = ?",
-    [mesa_id, fecha_reserva, hora_reserva, usuario_id, id]
-  );
+  await db
+    .promise()
+    .query(
+      "UPDATE reservas SET mesa_id = ?, fecha_reserva = ?, hora_reserva = ?, usuario_id = ? WHERE id = ?",
+      [mesa_id, fecha_reserva, hora_reserva, usuario_id, id]
+    );
   return id; // Devuelve el ID de la reserva actualizada
 };
 
@@ -50,7 +53,7 @@ const deleteReserva = async (id) => {
   return id; // Devuelve el ID de la reserva eliminada
 };
 
-module.exports = {
+export default {
   getAllReservas,
   getReservaById,
   createReserva,

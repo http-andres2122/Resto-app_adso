@@ -1,7 +1,7 @@
 // mesasRoutes.js (Rutas)
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const mesasController = require("../controllers/mesasController");
+import mesasController from "../controllers/mesasController.js";
 
 // Obtener todas las mesas
 router.get("/", mesasController.obtenerMesas);
@@ -18,4 +18,4 @@ router.put("/:id", mesasController.actualizarMesa);
 // Eliminar una mesa
 router.delete("/:id", mesasController.eliminarMesa);
 
-module.exports = router;
+export default router;

@@ -1,5 +1,5 @@
 // controllers/menuController.js
-const menu = require("../models/menuModel"); // Importamos el modelo de menú
+import menu from "../models/menuModel.js"; // Importamos el modelo de menú
 
 const menuController = {
   obtenerMenu: (req, res) => {
@@ -97,4 +97,4 @@ const menuController = {
   },
 };
 
-module.exports = menuController;
+export default menuController;

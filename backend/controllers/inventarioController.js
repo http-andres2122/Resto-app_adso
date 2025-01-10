@@ -1,5 +1,5 @@
 //se importa el modelo de inventario
-const inventario = require("../models/inventarioModel");
+import inventario from "../models/inventarioModel.js";
 
 const inventarioController = {
   //Obtener todos los productos
@@ -80,4 +80,4 @@ const inventarioController = {
   },
 };
 
-module.exports = inventarioController;
+export default inventarioController;

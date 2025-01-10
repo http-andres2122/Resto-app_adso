@@ -1,5 +1,5 @@
 // categoriaModel.js
-const connection = require("../config/db");
+import connection from "../config/db.js";
 
 const categorias = {
   // Obtener todas las categorías
@@ -36,4 +36,5 @@ const categorias = {
   },
 };
 
-module.exports = categorias;
+export default categorias;
+

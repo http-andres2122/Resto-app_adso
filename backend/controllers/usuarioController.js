@@ -1,5 +1,5 @@
 // controllers/userController.js
-const usuario = require("../models/usuarioModel");
+import usuario from "../models/usuarioModel.js";
 
 const usuarioController = {
   // Obtener todos los usuarios
@@ -126,4 +126,4 @@ const usuarioController = {
     }
   },
 };
-module.exports = usuarioController;
+export default usuarioController;

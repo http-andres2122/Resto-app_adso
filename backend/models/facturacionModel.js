@@ -1,5 +1,6 @@
 // models/facturacion.js
-const connection = require("../config/db"); // Conexión a la base de datos
+import connection from "../config/db.js";
+// Conexión a la base de datos
 
 const facturacion = {
   obtenerFacturas: (callback) => {
@@ -31,4 +32,4 @@ const facturacion = {
   },
 };
 
-module.exports = facturacion;
+export default facturacion;

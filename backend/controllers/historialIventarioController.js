@@ -1,4 +1,4 @@
-const historialInventarioModel = require("../models/historialInventarioModel");
+import historialInventarioModel from "../models/historialInventarioModel.js";
 
 const historialInventarioController = {
   async getAll(req, res) {
@@ -58,4 +58,4 @@ const historialInventarioController = {
   },
 };
 
-module.exports = historialInventarioController;
+export default historialInventarioController;

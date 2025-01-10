@@ -1,5 +1,5 @@
 // controllers/facturacionController.js
-const facturacion = require("../models/facturacionModel"); // Importamos el modelo de facturación
+import facturacion from "../models/facturacionModel.js"; // Importamos el modelo de facturación
 
 const facturacionController = {
   obtenerFacturas: (req, res) => {
@@ -84,4 +84,4 @@ const facturacionController = {
   },
 };
 
-module.exports = facturacionController;
+export default facturacionController;

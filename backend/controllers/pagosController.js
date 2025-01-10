@@ -1,4 +1,4 @@
-const pagosModel = require("../models/pagosModel");
+import pagosModel from "../models/pagosModel.js";
 
 // Controlador para obtener todos los pagos
 const getAllPagos = async (req, res) => {
@@ -74,7 +74,7 @@ const deletePago = async (req, res) => {
   }
 };
 
-module.exports = {
+export default {
   getAllPagos,
   getPagoById,
   createPago,

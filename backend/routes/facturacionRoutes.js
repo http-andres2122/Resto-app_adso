@@ -1,7 +1,7 @@
 // routes/facturacionRoutes.js
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const facturacionController = require("../controllers/facturacionController"); // Importamos el controlador de facturación
+import facturacionController from "../controllers/facturacionController.js"; // Importamos el controlador de facturación
 
 // Obtener todas las facturas
 router.get("/", facturacionController.obtenerFacturas);
@@ -18,4 +18,4 @@ router.put("/:id", facturacionController.actualizarFactura);
 // Eliminar una factura
 router.delete("/:id", facturacionController.eliminarFactura);
 
-module.exports = router;
+export default router;

@@ -1,7 +1,7 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const productoController = require("../controllers/productosController");
-const auth = require("../middlewares/auth");
+import productoController from "../controllers/productosController.js";
+import auth from "../middlewares/auth.js";
 const app = express();
 
 // Rutas para productos
@@ -11,4 +11,4 @@ router.post("/", productoController.createProducto);
 router.put("/:id", productoController.updateProducto);
 router.delete("/:id", productoController.deleteProducto);
 
-module.exports = router;
+export default router;

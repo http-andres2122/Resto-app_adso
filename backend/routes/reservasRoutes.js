@@ -1,6 +1,5 @@
-const express = require("express");
-const reservasController = require("../controllers/reservasController");
-
+import express from "express";
+import reservasController from "../controllers/reservasController.js";
 const router = express.Router();
 
 // Ruta para obtener todas las reservas
@@ -18,4 +17,4 @@ router.put("/:id", reservasController.updateReserva);
 // Ruta para eliminar una reserva
 router.delete("/:id", reservasController.deleteReserva);
 
-module.exports = router;
+export default router;

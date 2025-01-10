@@ -1,5 +1,5 @@
 // controllers/pedidoController.js
-const pedido = require("../models/pedidoModel"); // Importamos el modelo de pedido
+import pedido from "../models/pedidoModel.js"; // Importamos el modelo de pedido
 
 const pedidoController = {
   obtenerPedidos: (req, res) => {
@@ -88,4 +88,4 @@ const pedidoController = {
   },
 };
 
-module.exports = pedidoController;
+export default pedidoController;

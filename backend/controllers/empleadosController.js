@@ -1,4 +1,4 @@
-const empleados = require("../models/empleadosModel");
+import empleados from "../models/empleadosModel.js";
 
 const empleadosController = {
   // Obtener todos los empleados
@@ -88,4 +88,4 @@ const empleadosController = {
   },
 };
 
-module.exports = empleadosController;
+export default empleadosController;

@@ -1,4 +1,4 @@
-const connection = require("../config/db");
+import connection from "../config/db.js";
 
 //modelo para la tabla inventario
 const inventario = {
@@ -92,7 +92,7 @@ const inventario = {
         }
       );
     });
-  }
+  },
 };
 
-module.exports = inventario;
+export default inventario;

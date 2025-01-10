@@ -1,6 +1,6 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const empleadosController = require("../controllers/empleadosController");
+import empleadosController from "../controllers/empleadosController.js";
 
 // Obtener todos los empleados
 router.get("/", empleadosController.obtenerEmpleados);
@@ -17,4 +17,4 @@ router.put("/:id", empleadosController.actualizarEmpleado);
 // Eliminar un empleado
 router.delete("/:id", empleadosController.eliminarEmpleado);
 
-module.exports = router;
+export default router;

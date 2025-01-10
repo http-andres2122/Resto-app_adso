@@ -1,5 +1,5 @@
 // categoriaController.js
-const categoriaModel = require("../models/categoriasModel");
+import categoriaModel from "../models/categoriasModel.js";
 
 const categoriaController = {
   // Obtener todas las categorías
@@ -88,4 +88,4 @@ const categoriaController = {
   },
 };
 
-module.exports = categoriaController;
+export default categoriaController;

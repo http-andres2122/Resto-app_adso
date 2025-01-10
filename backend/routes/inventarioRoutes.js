@@ -1,7 +1,7 @@
 // iventarioRoutes.js
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const inventarioController = require("../controllers/inventarioController");
+import inventarioController from "../controllers/inventarioController.js";
 
 // Rutas para inventario
 router.get("/", inventarioController.getAllProductos); // Obtener todos los productos
@@ -10,4 +10,4 @@ router.post("/", inventarioController.createProduct); // Crear un nuevo producto
 router.put("/:id", inventarioController.updateProduct); // Actualizar un producto
 router.delete("/:id", inventarioController.deletedPrduct); // Eliminar un producto
 
-module.exports = router;
+export default router;

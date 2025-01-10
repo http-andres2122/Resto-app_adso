@@ -1,6 +1,7 @@
-const bcrypt = require("bcrypt");
-const generateToken = require("../utils/generateToken");
-const usuario = require("../models/usuarioModel");
+import verifyToken from "../utils/jwt.js"; // Importar la utilidad
+import bcrypt from "bcrypt";
+import generateToken from "../utils/generateToken.js";
+import usuario from "../models/usuarioModel.js";
 
 // Inicio de sesión
 const login = async (req, res) => {
@@ -21,8 +22,8 @@ const login = async (req, res) => {
     }
     // Generar token
     const token = generateToken(user);
-    console.log('token auth controller:',token);
-    console.log('user auth controller:',user);
+    console.log("token auth controller:", token);
+    console.log("user auth controller:", user);
     res.status(200).json({
       message: "Inicio de sesión exitoso",
       token,
@@ -75,4 +76,46 @@ const register = async (req, res) => {
   }
 };
 
-module.exports = { login, register };
+//get profile
+const getProfile = async (req, res) => {
+  try {
+    // Obtener el token del encabezado
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      return res.status(401).json({ message: "Token no proporcionado" });
+    }
+
+    const token = authHeader.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({ message: "Token inválido" });
+    }
+
+    // Verificar el token
+    const decoded = verifyToken(token);
+    const userId = decoded.id;
+
+    // Buscar al usuario en la base de datos
+    const user = await usuario.getUserById(userId);
+    if (user.length === 0) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    // Enviar el perfil del usuario
+    res.status(200).json({
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        num_phone: user.num_phone,
+        role: user.role_id,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error del servidor" });
+  }
+};
+
+export default { login, register, getProfile };

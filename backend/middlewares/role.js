@@ -1,4 +1,4 @@
-const db = require("../config/db"); // Conexión a la base de datos
+import db from "../config/db.js"; // Conexión a la base de datos
 
 const roleMiddleware =
   (...requiredRoles) =>
@@ -52,4 +52,4 @@ const roleMiddleware =
     }
   };
 
-module.exports = roleMiddleware;
+export default roleMiddleware;

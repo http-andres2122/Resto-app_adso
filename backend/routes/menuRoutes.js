@@ -1,7 +1,8 @@
 // routes/menuRoutes.js
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const menuController = require("../controllers/menuController"); // Importamos el controlador de menú
+import menuController from "../controllers/menuController.js";
+// Importamos el controlador de menú
 
 // Obtener todo el menú
 // router.get("/", menuController.obtenerMenu);
@@ -18,4 +19,4 @@ router.put("/:id", menuController.actualizarProductoEnMenu);
 // Eliminar un producto del menú
 router.delete("/:id", menuController.eliminarProductoDelMenu);
 
-module.exports = router;
+export default router;

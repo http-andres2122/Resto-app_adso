@@ -1,6 +1,5 @@
-const express = require("express");
-const pagosController = require("../controllers/pagosController");
-
+import express from "express";
+import pagosController from "../controllers/pagosController.js";
 const router = express.Router();
 
 // Ruta para obtener todos los pagos
@@ -18,4 +17,4 @@ router.put("//:id", pagosController.updatePago);
 // Ruta para eliminar un pago
 router.delete("/:id", pagosController.deletePago);
 
-module.exports = router;
+export default router;

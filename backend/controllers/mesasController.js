@@ -1,5 +1,5 @@
 // mesasController.js (Controlador)
-const mesas = require("../models/mesasModel");
+import mesas from "../models/mesasModel.js";
 
 const mesasController = {
   obtenerMesas: (req, res) => {
@@ -74,4 +74,4 @@ const mesasController = {
   },
 };
 
-module.exports = mesasController;
+export default mesasController;

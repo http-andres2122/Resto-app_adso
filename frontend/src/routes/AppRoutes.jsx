@@ -10,17 +10,18 @@ export default function AppRoutes() {
         <Router>
             <Routes>
                 <Route path="/" element={<Login />} />
+                <Route path="/dashboard" element={<Dashboard />} />
                 {/* <Route path="/home" element={<Home />} /> */}
 
                 {/* Ruta protegida */}
-                <Route
+                {/* <Route
                     path="/dashboard"
                     element={
                         <ProtectedRoute>
                             <Dashboard />
                         </ProtectedRoute>
                     }
-                />
+                /> */}
 
                 <Route path="*" element={<NotFound />} />
             </Routes>

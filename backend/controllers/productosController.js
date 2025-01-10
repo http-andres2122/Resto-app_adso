@@ -1,4 +1,4 @@
-const Producto = require("../models/ProductosModel.js");
+const Producto = require("../models/productosModel");
 
 const productosController = {
   // Obtener todos los productos

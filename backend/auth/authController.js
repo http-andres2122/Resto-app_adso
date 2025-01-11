@@ -1,7 +1,8 @@
 import verifyToken from "../utils/jwt.js"; // Importar la utilidad
 import bcrypt from "bcrypt";
 import generateToken from "../utils/generateToken.js";
-import usuario from "../models/usuarioModel.js";
+import usuario from "../models/users/usuarioModel.js";
+import db from "../config/db.js";
 
 // Inicio de sesión
 const login = async (req, res) => {
@@ -118,4 +119,43 @@ const getProfile = async (req, res) => {
   }
 };
 
-export default { login, register, getProfile };
+const logout = async (req, res) => {
+  try {
+    // Obtener el token del encabezado
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({
+        success: false,
+        message: "NO TIENES AUTORIZACION",
+      });
+    }
+
+    // Extraer el token
+    const token = authHeader.split(" ")[1];
+
+    // Verificar el token
+    const decoded = verifyToken(token);
+    const userId = decoded.id; // Extrae el ID del usuario del token
+
+    // Almacenar el token en la lista negra (opcional)
+    await db
+      .promise()
+      .query("INSERT INTO blacklisted_tokens (token, user_id) VALUES (?, ?)", [
+        token,
+        userId,
+      ]);
+
+    // Respuesta de éxito
+    res.status(200).json({
+      success: true,
+      message: "Cierre de sesión exitoso",
+    });
+  } catch (err) {
+    return res.status(401).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
+export default { login, register, getProfile, logout };

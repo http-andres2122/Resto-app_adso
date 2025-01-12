@@ -13,9 +13,9 @@ export default defineConfig({
     ///open web page auto
     open: true,
     //proxy for API BACKEND
-    proxy:{
-      '/api': 'http://localhost:9001' 
-    }
+    // proxy:{
+    //   '/api': 'http://localhost:9001' 
+    // }
   },
   build: {
     rollupOptions: {

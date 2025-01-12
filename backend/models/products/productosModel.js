@@ -40,12 +40,40 @@ const productos = {
       return callback(null, result);
     });
   },
+
   // get products with category
   getWithCategory: (callback) => {
-    db.query("SELECT * FROM productos", (err, results) => {
-      if (err) return callback(err, null);
-      return callback(null, results);
-    });
+    db.query(
+      "SELECT productos.*, categorias.nombre AS categoria_nombre FROM productos INNER JOIN categorias ON productos.categoria_id = categorias.id",
+      (err, results) => {
+        if (err) return callback(err, null);
+        return callback(null, results);
+      }
+    );
+  },
+
+  //get products with category by product ID
+  getWithCategoryProductId: (id, callback) => {
+    db.query(
+      "SELECT productos.id AS producto_id,productos.nombre AS producto_nombre,productos.precio AS producto_precio, productos.categoria_id, categorias.id AS categoria_id, categorias.nombre AS categoria_nombre FROM productos INNER JOIN categorias ON productos.categoria_id = categorias.id WHERE productos.id = ?",
+      [id],
+      (err, result) => {
+        if (err) return callback(err, null);
+        return callback(null, result);
+      }
+    );
+  },
+
+  //get products with category by category ID
+  getWithCategoryCategoryId: (id, callback) => {
+    db.query(
+      "SELECT productos.id AS producto_id,productos.nombre AS producto_nombre,productos.precio AS producto_precio, productos.categoria_id, categorias.id AS categoria_id, categorias.nombre AS categoria_nombre FROM productos INNER JOIN categorias ON productos.categoria_id = categorias.id WHERE categorias.id = ?",
+      [id],
+      (err, result) => {
+        if (err) return callback(err, null);
+        return callback(null, result);
+      }
+    );
   },
 };
 

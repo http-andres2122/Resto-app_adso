@@ -1,26 +1,36 @@
-// api/axios.config.js
-import axios from 'axios';
+// src/api/axiosConfig.js
+import axios from "axios";
+import { API_ENDPOINTS } from "./endpoints";
+
+const apiUrl = import.meta.env.VITE_APP_API_URL;
+console.log(apiUrl);
 
 const axiosInstance = axios.create({
-    baseURL: process.env.react_api,
-    timeout: 5000,
-    headers: {
-        'Content-Type': 'application/json'
-    }
+  baseURL: apiUrl,
+  timeout: 10000,
 });
 
-// Interceptor para tokens
 axiosInstance.interceptors.request.use(
-    (config) => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
-    },
-    (error) => {
-        return Promise.reject(error);
+  (config) => {
+    const token = localStorage.getItem("authToken");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      // Si el token es inválido o ha expirado, redirigir al login
+      localStorage.removeItem("authToken");
+      window.location.href = "/";
+    }
+    return Promise.reject(error);
+  }
 );
 
 export default axiosInstance;

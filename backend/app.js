@@ -37,7 +37,7 @@ app.get("/test-error", (req, res, next) => {
 });
 
 // Rutas públicas
-app.get("/api/productos", productosController.getAllProductos);
+app.get("/api/productos", productosController.getAllWithCategory);
 app.get("/api/menu", menuController.obtenerMenu);
 app.get("/api/reservas", reservasController.getAllReservas);
 

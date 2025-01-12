@@ -1,97 +1,100 @@
-// api/endpoints.js
+// src/api/endpoints.js
+
 export const API_ENDPOINTS = {
-    // Autenticación y Usuarios
-    AUTH: {
-        LOGIN: '/auth/login',
-        REGISTER: '/auth/register',
-        LOGOUT: '/auth/logout',
-        REFRESH_TOKEN: '/auth/refresh',
-        PROFILE: '/auth/profile',
-    },
+  // Autenticación
+  login: "/auth/login",
+  register: "/auth/register",
+  logout: "/auth/logout",
+  profile: "/auth/profile",
 
-    USERS: {
-        BASE: '/usuarios',
-        BY_ID: (id) => `/usuarios/${id}`,
-        UPDATE_PROFILE: (id) => `/usuarios/${id}`,
-        CHANGE_PASSWORD: (id) => `/usuarios/${id}/password`,
-    },
+  // Usuarios
+  getUsuarios: "/usuarios",
+  getUsuarioById: (id) => `/usuarios/${id}`,
+  createUsuario: "/usuarios",
+  updateUsuario: (id) => `/usuarios/${id}`,
+  deleteUsuario: (id) => `/usuarios/${id}`,
 
-    // Empleados
-    EMPLEADOS: {
-        BASE: '/empleados',
-        BY_ID: (id) => `/empleados/${id}`,
-        BY_ROLE: (roleId) => `/empleados/role/${roleId}`,
-    },
+  // Empleados
+  getEmpleados: "/empleados",
+  getEmpleadoById: (id) => `/empleados/${id}`,
+  createEmpleado: "/empleados",
+  updateEmpleado: (id) => `/empleados/${id}`,
+  deleteEmpleado: (id) => `/empleados/${id}`,
 
-    // Roles
-    ROLES: {
-        BASE: '/roles',
-        BY_ID: (id) => `/roles/${id}`,
-    },
+  // Productos
+  getProductos: "/productos",
+  getProductoById: (id) => `/productos/${id}`,
+  createProducto: "/productos",
+  updateProducto: (id) => `/productos/${id}`,
+  deleteProducto: (id) => `/productos/${id}`,
 
-    // Productos y Categorías
-    PRODUCTOS: {
-        BASE: '/productos',
-        BY_ID: (id) => `/productos/${id}`,
-        BY_CATEGORIA: (categoriaId) => `/productos/categoria/${categoriaId}`,
-    },
+  // Pedidos
+  getPedidos: "/pedidos",
+  getPedidoById: (id) => `/pedidos/${id}`,
+  createPedido: "/pedidos",
+  updatePedido: (id) => `/pedidos/${id}`,
+  deletePedido: (id) => `/pedidos/${id}`,
 
-    CATEGORIAS: {
-        BASE: '/categorias',
-        BY_ID: (id) => `/categorias/${id}`,
-    },
+  // Mesas
+  getMesas: "/mesas",
+  getMesaById: (id) => `/mesas/${id}`,
+  createMesa: "/mesas",
+  updateMesa: (id) => `/mesas/${id}`,
+  deleteMesa: (id) => `/mesas/${id}`,
 
-    // Inventario
-    INVENTARIO: {
-        BASE: '/inventario',
-        BY_PRODUCTO: (productoId) => `/inventario/producto/${productoId}`,
-        HISTORIAL: '/inventario/historial',
-        HISTORIAL_BY_PRODUCTO: (productoId) => `/inventario/historial/producto/${productoId}`,
-    },
+  // Reservas
+  getReservas: "/reservas",
+  getReservaById: (id) => `/reservas/${id}`,
+  createReserva: "/reservas",
+  updateReserva: (id) => `/reservas/${id}`,
+  deleteReserva: (id) => `/reservas/${id}`,
 
-    // Menú
-    MENU: {
-        BASE: '/menu',
-        DISPONIBLES: '/menu/disponibles',
-        TOGGLE_DISPONIBILIDAD: (productoId) => `/menu/producto/${productoId}/disponibilidad`,
-    },
+  // Facturación
+  getFacturacion: "/facturacion",
+  getFacturaById: (id) => `/facturacion/${id}`,
+  createFactura: "/facturacion",
+  updateFactura: (id) => `/facturacion/${id}`,
+  deleteFactura: (id) => `/facturacion/${id}`,
 
-    // Mesas y Reservas
-    MESAS: {
-        BASE: '/mesas',
-        BY_ID: (id) => `/mesas/${id}`,
-        DISPONIBLES: '/mesas/disponibles',
-    },
+  // Pagos
+  getPagos: "/pagos",
+  getPagoById: (id) => `/pagos/${id}`,
+  createPago: "/pagos",
+  updatePago: (id) => `/pagos/${id}`,
+  deletePago: (id) => `/pagos/${id}`,
 
-    RESERVAS: {
-        BASE: '/reservas',
-        BY_ID: (id) => `/reservas/${id}`,
-        BY_MESA: (mesaId) => `/reservas/mesa/${mesaId}`,
-        BY_USUARIO: (userId) => `/reservas/usuario/${userId}`,
-        BY_FECHA: '/reservas/fecha',
-    },
+  // Categorias
+  getCategorias: "/categorias",
+  getCategoriaById: (id) => `/categorias/${id}`,
+  createCategoria: "/categorias",
+  updateCategoria: (id) => `/categorias/${id}`,
+  deleteCategoria: (id) => `/categorias/${id}`,
 
-    // Pedidos
-    PEDIDOS: {
-        BASE: '/pedidos',
-        BY_ID: (id) => `/pedidos/${id}`,
-        BY_MESA: (mesaId) => `/pedidos/mesa/${mesaId}`,
-        BY_USUARIO: (userId) => `/pedidos/usuario/${userId}`,
-        ACTUALIZAR_ESTADO: (id) => `/pedidos/${id}/estado`,
-    },
+  // Historial Inventario
+  getHistorialInventario: "/historial_inventario",
+  getHistorialInventarioById: (id) => `/historial_inventario/${id}`,
+  createHistorialInventario: "/historial_inventario",
+  updateHistorialInventario: (id) => `/historial_inventario/${id}`,
+  deleteHistorialInventario: (id) => `/historial_inventario/${id}`,
 
-    // Facturación y Pagos
-    FACTURACION: {
-        BASE: '/facturacion',
-        BY_ID: (id) => `/facturacion/${id}`,
-        BY_PEDIDO: (pedidoId) => `/facturacion/pedido/${pedidoId}`,
-    },
+  // Inventario
+  getInventario: "/inventario",
+  getInventarioById: (id) => `/inventario/${id}`,
+  createInventario: "/inventario",
+  updateInventario: (id) => `/inventario/${id}`,
+  deleteInventario: (id) => `/inventario/${id}`,
 
-    PAGOS: {
-        BASE: '/pagos',
-        BY_ID: (id) => `/pagos/${id}`,
-        BY_FACTURA: (facturaId) => `/pagos/factura/${facturaId}`,
-        PROCESAR_PAGO: (id) => `/pagos/${id}/procesar`,
-        CANCELAR_PAGO: (id) => `/pagos/${id}/cancelar`,
-    }
+  // Menu
+  getMenu: "/menu",
+  getMenuById: (id) => `/menu/${id}`,
+  updateMenu: (id) => `/menu/${id}`,
+  createMenu: "/menu",
+  deleteMenu: (id) => `/menu/${id}`,
+
+  // Roles
+  getRoles: "/roles",
+  getRoleById: (id) => `/roles/${id}`,
+  createRole: "/roles",
+  updateRole: (id) => `/roles/${id}`,
+  deleteRole: (id) => `/roles/${id}`,
 };

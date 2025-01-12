@@ -49,6 +49,36 @@ const productosController = {
       return res.json({ message: "Producto eliminado" });
     });
   },
+
+  //get products all with category
+  getAllWithCategory: (req, res) => {
+    Producto.getWithCategory((err, producto) => {
+      if (err) return res.status(500).json({ error: err });
+      return res.json(producto);
+    });
+  },
+
+  //get products with category by product ID
+  getWithCategoryProductId: (req, res) => {
+    const { id } = req.params;
+    Producto.getWithCategoryProductId(id, (err, producto) => {
+      if (err) return res.status(500).json({ error: err });
+      if (!producto)
+        return res.status(404).json({ message: "Producto no encontrado" });
+      return res.json(producto);
+    });
+  },
+
+  //get products with category by category ID
+  getWithCategoryByCategoryId: (req, res) => {
+    const { id } = req.params;
+    Producto.getWithCategoryCategoryId(id, (err, producto) => {
+      if (err) return res.status(500).json({ error: err });
+      if (!producto)
+        return res.status(404).json({ message: "Producto no encontrado" });
+      return res.json(producto);
+    });
+  },
 };
 
 export default productosController;

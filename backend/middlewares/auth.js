@@ -9,7 +9,7 @@ const auth = (req, res, next) => {
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return res.status(401).json({
       success: false,
-      message: "NO TIENES AUTORIZACION",
+      message: "NO TIENES AUTORIZACION :)",
     });
   }
 

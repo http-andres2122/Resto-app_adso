@@ -6,7 +6,8 @@ const app = express();
 
 // Rutas para productos
 // router.get("/", productoController.getAllProductos);
-router.get("/:id", productoController.getProductoById);
+router.get("/:id", productoController.getWithCategoryProductId);
+router.get("/categoria/:id", productoController.getWithCategoryProductId);
 router.post("/", productoController.createProducto);
 router.put("/:id", productoController.updateProducto);
 router.delete("/:id", productoController.deleteProducto);

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import useDarkMode from "../hooks/UseDarkMode"; // Hook para el modo oscuro
 import { useNavigate } from "react-router-dom"; // Para redirigir al usuario
-import axios from "axios"; // Importamos axios
+import { login } from "../api/services/auth/authService"; // Importamos el servicio de login
 
 export default function Login() {
   useDarkMode(); // Activamos el modo oscuro utilizando el hook
@@ -14,35 +14,23 @@ export default function Login() {
     e.preventDefault(); // Prevenir comportamiento por defecto del formulario
 
     try {
-      // Realizar la solicitud al back-end usando axios
-      const response = await axios.post("http://localhost:5000/api/auth/login", {
-        email,
-        password,
-      });
-
-      const { token } = response.data;
+      // Llamada al servicio de autenticación
+      const { token } = await login(email, password);
 
       // Guardar token en localStorage
-      localStorage.setItem("authToken", token); 
+      localStorage.setItem("authToken", token);
 
       // Redirigir al dashboard
       navigate("/dashboard");
     } catch (err) {
       // Manejo de errores
-      if (err.response) {
-        // Si el error viene del servidor (por ejemplo, credenciales incorrectas)
-        setError(err.response.data.message || "Credenciales inválidas");
-      } else {
-        // Si hay un error de red u otro problema
-        setError("Hubo un problema al iniciar sesión. Inténtalo de nuevo.");
-      }
+      setError(err.message || "Hubo un problema al iniciar sesión. Inténtalo de nuevo.");
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-300 dark:from-gray-900 dark:to-gray-800">
       <div className="bg-white dark:bg-gray-800 dark:text-gray-200 shadow-lg rounded-lg p-8 max-w-sm w-full">
-        {/* Logo o título */}
         <div className="text-center mb-6">
           <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">
             Bienvenido
@@ -52,21 +40,15 @@ export default function Login() {
           </p>
         </div>
 
-        {/* Mostrar error */}
         {error && (
           <div className="mb-4 text-red-500 text-sm font-semibold text-center">
             {error}
           </div>
         )}
 
-        {/* Formulario */}
         <form onSubmit={handleSubmit}>
-          {/* Campo de Email */}
           <div className="mb-4">
-            <label
-              htmlFor="email"
-              className="block text-sm font-semibold text-gray-700 dark:text-gray-300"
-            >
+            <label htmlFor="email" className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
               Correo Electrónico
             </label>
             <input
@@ -80,12 +62,8 @@ export default function Login() {
             />
           </div>
 
-          {/* Campo de Contraseña */}
           <div className="mb-4">
-            <label
-              htmlFor="password"
-              className="block text-sm font-semibold text-gray-700 dark:text-gray-300"
-            >
+            <label htmlFor="password" className="block text-sm font-semibold text-gray-700 dark:text-gray-300">
               Contraseña
             </label>
             <input
@@ -99,7 +77,6 @@ export default function Login() {
             />
           </div>
 
-          {/* Botón de Inicio de Sesión */}
           <div className="mt-6">
             <button
               type="submit"
@@ -110,21 +87,16 @@ export default function Login() {
           </div>
         </form>
 
-        {/* Separador */}
         <div className="flex items-center my-4">
           <hr className="flex-grow border-gray-300 dark:border-gray-700" />
           <span className="mx-2 text-gray-500 dark:text-gray-400 text-sm">o</span>
           <hr className="flex-grow border-gray-300 dark:border-gray-700" />
         </div>
 
-        {/* Opción de Registro */}
         <div className="text-center">
           <p className="text-sm text-gray-600 dark:text-gray-400">
             ¿No tienes una cuenta?{" "}
-            <a
-              href="/register"
-              className="text-blue-600 dark:text-blue-400 hover:underline"
-            >
+            <a href="/register" className="text-blue-600 dark:text-blue-400 hover:underline">
               Regístrate aquí
             </a>
           </p>

@@ -25,16 +25,24 @@ import menuController from "./controllers/products/menuController.js";
 import productosController from "./controllers/products/productosController.js";
 import reservasController from "./controllers/orders/reservasController.js";
 
+//milddlewares
+import auth from "./middlewares/auth.js";
+import role from "./middlewares/role.js";
+
 // Configuración
 dotenv.config();
 const app = express();
-app.use(express.json());
-app.use(cors());
 
-// Middleware de ejemplo para lanzar un error
-app.get("/test-error", (req, res, next) => {
-  next(new CustomError("Este es un error de prueba", 400));
-});
+// Opciones de CORS
+const corsOptions = {
+  origin: "http://172.20.80.50:9005", // Solo permite peticiones desde frontend
+  methods: "GET, POST, PUT, DELETE", // Solo permite el método POST
+  allowedHeaders: "Content-Type, Authorization", // Solo permite el encabezado Content-Type
+  credentials: true, // para enviar cookies o autenticación con credenciales
+};
+
+app.use(cors(corsOptions)); // Usa CORS con las opciones configuradas
+app.use(express.json()); // Middleware para parsear el body de las peticiones JSON
 
 // Rutas públicas
 app.get("/api/productos", productosController.getAllWithCategory);
@@ -42,8 +50,6 @@ app.get("/api/menu", menuController.obtenerMenu);
 app.get("/api/reservas", reservasController.getAllReservas);
 
 // Rutas protegidas
-import auth from "./middlewares/auth.js";
-import role from "./middlewares/role.js";
 app.use("/api/productos", auth, role(1), productoRoutes);
 app.use("/api/usuarios", auth, role(1), userRoutes);
 app.use("/api/categorias", auth, role(1), categoriaRoutes);
@@ -60,7 +66,7 @@ app.use("/api/auth", loginRoutes);
 
 // Ruta por defecto
 app.use("/", (req, res) => {
-  res.status(401).json({ message: "Bienvenido a la API de restaurante :)" });
+  res.status(404).json({ message: "Recurso no encontrado" });
 });
 
 // Manejador de errores

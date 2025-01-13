@@ -8,6 +8,7 @@ import Orders from "./Orders";
 import Tables from "./Tables";
 
 export default function Dashboard() {
+  console.log("Dashboard");
   const [activeSection, setActiveSection] = useState("overview");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Estado para controlar la apertura del sidebar en móvil
 

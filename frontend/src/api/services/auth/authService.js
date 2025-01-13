@@ -11,7 +11,7 @@ export const login = async (email, password) => {
     });
     return response.data;
   } catch (error) {
-    throw new Error("Error al intentar iniciar sesión");
+    throw error;
   }
 };
 

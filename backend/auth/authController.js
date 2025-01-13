@@ -8,17 +8,20 @@ import db from "../config/db.js";
 const login = async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
+    console.log("faltan campos");
     return res.status(400).json({ message: "Faltan campos obligatorios" });
   }
   try {
     //verificar si el usuario ya existe y almacena informacion del usuario para el login
     const user = await usuario.findUserByEmail(email);
     if (!user) {
+      console.log("usuario no encontrado");
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
     // Verificar la contraseña
     const isPasswordValid = await bcrypt.compare(password, user.password_hash);
     if (!isPasswordValid) {
+      console.log("contraseña invalida");
       return res.status(401).json({ message: "Credenciales inválidas" });
     }
     // Generar token

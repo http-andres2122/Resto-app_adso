@@ -1,25 +1,26 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react-swc";
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  //configurando proxy
   server: {
-    //Setup port
+    // ¡MUY IMPORTANTE: historyApiFallback DENTRO de server!
     port: 9005,
-    //host enable for LOCAL And Remote (LAN-WAN)
     host: true,
-    ///open web page auto
     open: true,
-    //proxy for API BACKEND
-    // proxy:{
-    //   '/api': 'http://localhost:9001' 
-    // }
+    hmr: true,
+    proxy: {
+      "/api": {
+        target: "http://172.20.80.50:9002",
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+    historyApiFallback: true, // ¡Aquí debe estar!
   },
   build: {
     rollupOptions: {
-      input: './index.html',
+      input: "./index.html",
     },
   },
 });

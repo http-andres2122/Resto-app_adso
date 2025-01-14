@@ -29,7 +29,7 @@ export const register = async (data) => {
 export const logout = async () => {
   try {
     await axiosInstance.post(API_ENDPOINTS.logout);
-    localStorage.removeItem("token");
+    localStorage.removeItem("authToken");
   } catch (error) {
     throw new Error("Error al intentar cerrar sesión");
   }

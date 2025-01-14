@@ -1,14 +1,16 @@
-// src/components/ProtectedRoute.js
+import React, { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext';
 
 const ProtectedRoute = ({ children }) => {
-  const token = localStorage.getItem('authToken');
+    const { isAuthenticated } = useContext(AuthContext); // Usamos isAuthenticated
+    console.log("protected route: estado del verifyAuth:", isAuthenticated)
 
-  if (!token) {
-    return <Navigate to="/login" />; // Redirige *solo* a /login
-  }
+    if (!isAuthenticated) { // Comprobamos isAuthenticated directamente
+        return <Navigate to="/login" replace />;
+    }
 
-  return children;
+    return children;
 };
 
 export default ProtectedRoute;

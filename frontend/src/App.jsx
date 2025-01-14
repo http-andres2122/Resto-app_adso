@@ -1,8 +1,9 @@
+//app.jsx
 import React from "react";
 import AppRoutes from "./routes/AppRoutes";
+import AuthContextProvider from "./context/AuthContext";
 
 export default function App() {
-  console.log("Renderizando app.jsx", { location: window.location.pathname });
   return (
     <div className="App">
       <AppRoutes />

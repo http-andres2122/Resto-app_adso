@@ -1,9 +1,7 @@
-// src/api/axiosConfig.js
 import axios from "axios";
 import { API_ENDPOINTS } from "./endpoints";
 
 const apiUrl = import.meta.env.VITE_APP_API_URL;
-console.log(apiUrl);
 
 const axiosInstance = axios.create({
   baseURL: apiUrl,
@@ -23,11 +21,10 @@ axiosInstance.interceptors.request.use(
 
 axiosInstance.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
     if (error.response && error.response.status === 401) {
-      // Si el token es inválido o ha expirado, redirigir al login
       localStorage.removeItem("authToken");
-      window.location.href = "/";
+      console.log("Token eliminado por 401");
     }
     return Promise.reject(error);
   }

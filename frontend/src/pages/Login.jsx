@@ -1,62 +1,40 @@
-import React, { useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import useDarkMode from "../hooks/UseDarkMode"; // Importo el hook para el modo oscuro
-import { useNavigate } from "react-router-dom"; // Importo useNavigate para la navegación
-import { login } from "../api/services/auth/authService"; // Importo el servicio de login
-import { createSearchParams } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext"; //importarmos el contexto
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
   useDarkMode(); // Activo el modo oscuro usando el hook
+  const { login, isLoading, isError, errorDetails } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [email, setEmail] = useState(""); // Estado para el email, inicializado como string vacío
   const [password, setPassword] = useState(""); // Estado para la contraseña, inicializado como string vacío
-  const [error, setError] = useState(""); // Estado para el mensaje de error, inicializado como string vacío
-  const navigate = useNavigate(); // Hook para obtener la función de navegación
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevengo la recarga de la página al enviar el formulario
-    setError(""); // Limpio el mensaje de error antes de cada intento de login
 
     try {
-      // Intento realizar el login llamando al servicio
-      const { token } = await login(email, password); // Llamo a la función login del servicio, que hace la petición al backend
-      localStorage.setItem("authToken", token); // Guardo el token en el localStorage
-      navigate("/dashboard"); // Redirijo al usuario al dashboard
+      await login(email, password); // llama a la funcion login del contexto
+      navigate('/dashboard')
     } catch (error) {
       console.error("Error en el login:", error);
-      console.trace("Traza del error:");
-      // Manejo de errores en caso de que la petición falle
-      console.error("Error completo en el login:", error); // Imprimo el error completo en la consola para depuración
-
-      let errorMessage = "Hubo un problema al iniciar sesión. Inténtalo de nuevo :)."; // Mensaje de error por defecto
-
-      if (error.response) { // Verifico si hay una respuesta del servidor
-        console.error("Respuesta del servidor:", error.response); // Imprimo la respuesta completa
-        if (error.response.data) {
-          console.error("Datos de la respuesta:", error.response.data); // Imprimo los datos de la respuesta
-        }
-        if (error.response.data && error.response.data.message) {
-          errorMessage = error.response.data.message; // Obtengo el mensaje del backend si existe
-        } else if (error.response.status === 401) {
-          errorMessage = "Credenciales incorrectas."; // Mensaje específico para error 401
-        } else if (error.response.status === 404) {
-          errorMessage = "Usuario no encontrado."; // Mensaje específico para error 404
-        } else if (error.response.status === 400) {
-          errorMessage = "Petición incorrecta."; // Mensaje específico para 400
-        }
-        else {
-          errorMessage = `Error del servidor: ${error.response.status} ${error.response.statusText}.`;//Mensaje mas especifico
-        }
-      } else if (error.request) { // Verifico si hubo un error de red (no se recibió respuesta)
-        console.error("No se recibió respuesta del servidor:", error.request);
-        errorMessage = "No se pudo conectar con el servidor.";
-      } else { // Otros tipos de errores
-        console.error("Error desconocido:", error);
-        errorMessage = "Ocurrió un error desconocido. Inténtalo nuevamente más tarde.";
-      }
-
-      setError(errorMessage); // Establezco el mensaje de error en el estado, ¡ESTO ES CRUCIAL PARA MOSTRAR EL ERROR EN EL COMPONENTE!
-      // Ya no uso navigate("/login-error")
+      console.log(error);
     }
   };
+  //redirect use effect 
+  // useEffect(() => {
+  //   const token = localStorage.getItem('token');
+  //   if (token) {
+  //     navigate('/dashboard'); // Redirección DESPUÉS de la actualización
+  //   }
+  // }, [localStorage.getItem('token')]); // El efecto se ejecuta cuando cambia el token en localStorage
+
+
+  if (isLoading) {
+    return <div className="text-center mt-4">Cargando...</div>; // Mensaje de carga centrado
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-300 dark:from-gray-900 dark:to-gray-800">
@@ -73,9 +51,13 @@ export default function Login() {
           </p>
         </div>
 
-        {error && ( // Renderizado condicional del mensaje de error. Si 'error' tiene un valor (string no vacío), se muestra el div.
+        {isError && ( // Renderizado condicional del mensaje de error. Si 'error' tiene un valor (string no vacío), se muestra el div.
           <div className="mb-4 text-red-500 text-sm font-semibold text-center">
-            {error} {/* Muestro el mensaje de error */}
+            {isError} {/* Mensaje de error general */}
+            {/*Manejo de distintos tipos de respuesta*/}
+            {errorDetails && errorDetails.message && <p>{errorDetails.message}</p>}
+            {errorDetails && errorDetails.error && <p>{errorDetails.error}</p>}
+            {errorDetails && errorDetails.errors && Object.keys(errorDetails.errors).map(key => (<p key={key}>{key}: {errorDetails.errors[key]}</p>))}
           </div>
         )}
 

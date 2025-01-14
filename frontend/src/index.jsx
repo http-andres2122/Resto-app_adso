@@ -1,11 +1,18 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './style/tailwind.css'
-import App from './App.jsx'
+//index.jsx
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import { BrowserRouter as Router } from 'react-router-dom';
+import App from './App';
+import AuthContextProvider from './context/AuthContext';
+import './style/tailwind.css';
 
-console.log("renderizando index.jsx", { location: window.location.pathname })
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <App />
-  </StrictMode>
-)
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  <React.StrictMode>
+    <Router>
+      <AuthContextProvider>
+        <App />
+      </AuthContextProvider>
+    </Router>
+  </React.StrictMode>
+);

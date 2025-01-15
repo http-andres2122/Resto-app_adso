@@ -4,8 +4,9 @@ import { API_ENDPOINTS } from "./endpoints";
 const apiUrl = import.meta.env.VITE_APP_API_URL;
 
 const axiosInstance = axios.create({
-  baseURL: apiUrl,
+  baseURL: "/api",
   timeout: 10000,
+  withCredentials: true,
 });
 
 axiosInstance.interceptors.request.use(

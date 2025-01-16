@@ -1,33 +1,17 @@
 import { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
-import Overview from "./Overview";
-import Products from "./Products";
-import Settings from "./Settings";
-import Orders from "./Orders";
-import Tables from "./Tables";
+import ContentRenderer from '../components/ContentRenderer'; // Importa el nuevo componente
+
+import Overview from "./Dashboard/Overview";
+import Products from "./Dashboard/Products";
+import Settings from "./Dashboard/Settings";
+import Orders from "./Dashboard/Orders";
+import Tables from "./Dashboard/Tables";
 
 export default function Dashboard() {
-  console.log("Dashboard");
-  const [activeSection, setActiveSection] = useState("overview");
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Estado para controlar la apertura del sidebar en móvil
-
-  const renderContent = () => {
-    switch (activeSection) {
-      case "overview":
-        return <Overview />;
-      case "products":
-        return <Products />;
-      case "orders":
-        return <Orders />;
-      case "tables":
-        return <Tables />;
-      case "settings":
-        return <Settings />;
-      default:
-        return <Overview />;
-    }
-  };
+  const [activeSection, setActiveSection] = useState('overview');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   return (
     <div className="flex h-screen min-h-screen bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
@@ -35,8 +19,8 @@ export default function Dashboard() {
       <Sidebar
         setActiveSection={setActiveSection}
         activeSection={activeSection}
-        isOpen={isSidebarOpen} // Pasamos el estado para el sidebar
-        setIsSidebarOpen={setIsSidebarOpen} // Pasamos la función para controlar el sidebar
+        isOpen={isSidebarOpen}
+        setIsSidebarOpen={setIsSidebarOpen}
       />
 
       {/* Main Content */}
@@ -46,7 +30,7 @@ export default function Dashboard() {
 
         {/* Content */}
         <div className="flex-1 p-6 overflow-y-auto">
-          {renderContent()}
+          <ContentRenderer activeSection={activeSection} /> {/* Usa el nuevo componente */}
         </div>
       </div>
 

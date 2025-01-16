@@ -1,9 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import useDarkMode from "../hooks/UseDarkMode";
+import { AuthContext } from "../context/AuthContext";
 
 export default function Header() {
   const [isDarkMode, toggleDarkMode] = useDarkMode();
   const [menuOpen, setMenuOpen] = useState(false);
+  const { user, logout } = useContext(AuthContext); // Obtiene user y logout del contexto
+
+  const handleLogout = () => {
+    logout(); // Llama a la función de logout del contexto
+  };
 
   const toggleMenu = () => setMenuOpen((prev) => !prev);
 
@@ -41,7 +47,7 @@ export default function Header() {
           {/* Opciones de Escritorio */}
           <div className="hidden sm:flex items-center space-x-4">
             <span className="text-gray-600 dark:text-gray-300">
-              Hola, Administrador
+              Hola, {user && user.first_name ? user.first_name : "Administrador"}
             </span>
             <button
               onClick={toggleDarkMode}
@@ -49,7 +55,9 @@ export default function Header() {
             >
               {isDarkMode ? "Modo Claro" : "Modo Oscuro"}
             </button>
-            <button className="px-4 py-2 text-sm bg-red-500 dark:bg-red-600 text-white rounded hover:bg-red-600 dark:hover:bg-red-700">
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 text-sm bg-red-500 dark:bg-red-600 text-white rounded hover:bg-red-600 dark:hover:bg-red-700">
               Cerrar Sesión
             </button>
           </div>
@@ -62,7 +70,7 @@ export default function Header() {
           <ul className="space-y-2">
             <li>
               <span className="block px-4 py-2 text-gray-800 dark:text-gray-200">
-                Hola, Administrador
+                Hola, {user && user.first_name ? user.first_name : "Administrador"}
               </span>
             </li>
             <li>
@@ -74,7 +82,9 @@ export default function Header() {
               </button>
             </li>
             <li>
-              <button className="w-full text-left px-4 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600">
+              <button
+                onClick={handleLogout}
+                className="w-full text-left px-4 py-2 text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600">
                 Cerrar Sesión
               </button>
             </li>

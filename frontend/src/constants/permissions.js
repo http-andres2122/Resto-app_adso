@@ -1,0 +1,69 @@
+// utils/permissions.js
+export const ROLES = {
+  ADMIN: 1,
+  MESERO: 5,
+  COCINA: 3,
+  CAJA: 4,
+  CLIENTE: 2,
+  EMPLEADO: 6,
+};
+
+export const PERMISSIONS = {
+  PRODUCTOS: {
+    VER: "productos.ver",
+    EDITAR: "productos.editar",
+    CREAR: "productos.crear",
+    ELIMINAR: "productos.eliminar",
+  },
+  ORDENES: {
+    VER: "ordenes.ver",
+    CREAR: "ordenes.crear",
+    CANCELAR: "ordenes.cancelar",
+  },
+  USUARIOS: {
+    VER: "usuarios.ver",
+    CREAR: "usuarios.crear",
+    EDITAR: "usuarios.editar",
+    ELIMINAR: "usuarios.eliminar",
+  },
+  MESAS: {
+    VER: "mesas.ver",
+    RESERVAR: "mesas.reservar",
+  },
+  CONFIGURACION: {
+    VER: "configuracion.ver",
+    EDITAR: "configuracion.editar",
+  },
+};
+
+export const ROLES_PERMISSIONS = {
+  [ROLES.ADMIN]: [
+    // Usando los valores numéricos directamente
+    PERMISSIONS.PRODUCTOS.VER,
+    PERMISSIONS.PRODUCTOS.EDITAR,
+    PERMISSIONS.PRODUCTOS.CREAR,
+    PERMISSIONS.PRODUCTOS.ELIMINAR,
+    PERMISSIONS.ORDENES.VER,
+    PERMISSIONS.ORDENES.CREAR,
+    PERMISSIONS.ORDENES.CANCELAR,
+    PERMISSIONS.USUARIOS.VER,
+    PERMISSIONS.USUARIOS.CREAR,
+    PERMISSIONS.USUARIOS.EDITAR,
+    PERMISSIONS.USUARIOS.ELIMINAR,
+    PERMISSIONS.MESAS.VER,
+    PERMISSIONS.MESAS.RESERVAR,
+    PERMISSIONS.CONFIGURACION.VER,
+    PERMISSIONS.CONFIGURACION.EDITAR,
+  ],
+  [ROLES.MESERO]: [
+    PERMISSIONS.PRODUCTOS.VER,
+    PERMISSIONS.ORDENES.VER,
+    PERMISSIONS.ORDENES.CREAR,
+    PERMISSIONS.MESAS.VER,
+    PERMISSIONS.MESAS.RESERVAR,
+  ],
+  [ROLES.COCINA]: [PERMISSIONS.PRODUCTOS.VER, PERMISSIONS.ORDENES.VER],
+  [ROLES.CAJA]: [PERMISSIONS.ORDENES.VER],
+  [ROLES.CLIENTE]: [PERMISSIONS.PRODUCTOS.VER, PERMISSIONS.MESAS.VER],
+  [ROLES.EMPLEADO]: [PERMISSIONS.PRODUCTOS.VER, PERMISSIONS.ORDENES.VER],
+};

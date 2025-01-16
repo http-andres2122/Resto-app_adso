@@ -1,0 +1,7 @@
+@tailwind base;       /* Estilos básicos de Tailwind */
+@tailwind components; /* Componentes prediseñados reutilizables */
+@tailwind utilities;  /* Clases utilitarias para personalización rápida */
+
+body {
+    @apply bg-gray-100 font-sans;
+  }

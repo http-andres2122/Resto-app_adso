@@ -1,4 +1,4 @@
-// src/api/historialInventarioService.js
+// src/api/services/products/historialInventarioService.js
 import axiosInstance from "./axiosConfig";
 import { API_ENDPOINTS } from "./endpoints";
 

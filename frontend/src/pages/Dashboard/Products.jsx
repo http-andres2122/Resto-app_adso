@@ -4,9 +4,13 @@ import EditProduct from "./../../components/products/editProduct";
 import TableProducts from "./../../components/products/TableProducts.jsx";
 import useProductStore from "../../store/ProductStore.jsx";
 export default function Products() {
+  const [editProduct, setEditProduct] = useState(null);
   const [products, setProducts] = useState([]); // Estado para almacenar los productos
   const [loading, setLoading] = useState(true); // Estado para indicar si se están cargando los datos
   const [error, setError] = useState(null); // Estado para manejar errores
+  const { showAddProduct, setShowAddProduct } = useProductStore(); // Correcto
+  const { showEditProduct, setShowEditProduct } = useProductStore(); // Correcto
+  console.log("showAddProduct product:", showAddProduct);
   // if (loading) {
   //   return <div className="text-center py-4">Cargando productos...</div>;
   // }
@@ -20,17 +24,6 @@ export default function Products() {
   //     <div className="text-center py-4">No hay productos para mostrar.</div>
   //   );
   // }
-  if (loading) {
-    return <div className="text-center py-4">Cargando productos...</div>;
-  }
-
-  if (error) {
-    return <div className="text-center text-red-500 py-4">{error}</div>;
-  }
-
-  if (!products || products.length === 0) {
-    return <div className="text-center py-4">No hay productos para mostrar.</div>;
-  }
   return (
     <div className="p-6 rounded-lg shadow-md bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200">
       {/* pagina  */}
@@ -65,9 +58,7 @@ export default function Products() {
       {/*edit zone */}
       {showEditProduct && (
         <div>
-          <EditProduct
-            onCancel={() => setShowEditProduct()}
-          />
+          <EditProduct onCancel={() => setShowEditProduct()} />
         </div>
       )}
     </div>

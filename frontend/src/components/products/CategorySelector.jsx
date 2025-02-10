@@ -9,10 +9,20 @@ function CategorySelector() {
   const [selectedValue, setSelectedValue] = useState(""); // Valor seleccionado, solo la id
   const [showAddOptionModal, setShowAddOptionModal] = useState(false); // Mostrar modal
 
-  // Cargar categorías al montar el componente
+  // Cargar las categorías al montar el componente
   useEffect(() => {
-    fetchCategories();
-  }, [fetchCategories]);
+    const loadCategories = async () => {
+      await fetchCategories();
+    };
+    loadCategories();
+  }, []);
+
+  const handleSelectChange = (value) => {
+    const numericValue = parseInt(value, 10); // Convertir a número entero
+    console.log("Nueva categoría seleccionada:", numericValue);
+    setSelectedValue(numericValue);
+  };
+  console.log("category1:", selectedValue);
 
   const handleAddOption = async (name) => {
     if (
@@ -21,15 +31,12 @@ function CategorySelector() {
       alert("Esta categoría ya existe.");
       return;
     }
-
     const newCategory = { nombre: name };
     const addedCategory = await addCategory(newCategory); // Devolver la categoría agregada
-
     if (addedCategory && addedCategory.id) {
       setSelectedValue(addedCategory.id);
       // Seleccionar automáticamente la nueva categoría
     }
-
     setShowAddOptionModal(false);
   };
 
@@ -42,7 +49,7 @@ function CategorySelector() {
     if (userConfirmed) {
       await deleteCategory(selectedValue); // Eliminar la categoría seleccionada
       fetchCategories(); // Recargar las categorías después de eliminar
-      setSelectedValue(""); // Limpiar la selección
+      //setSelectedValue(""); // Limpiar la selección
     } else {
       alert("No se ha eliminado la categoría.");
     }
@@ -54,7 +61,7 @@ function CategorySelector() {
       <DynamicSelector
         options={categories.map((cat) => ({ id: cat.id, name: cat.nombre }))}
         selectedValue={selectedValue}
-        onChange={setSelectedValue} // Solo actualiza el id
+        onChange={handleSelectChange} // Solo actualiza el id
         label="Categoría"
         placeholder="Seleccione una categoría"
       />

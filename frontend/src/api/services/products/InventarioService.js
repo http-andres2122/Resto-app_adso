@@ -1,6 +1,6 @@
-// src/api/inventarioService.js
-import axiosInstance from "./axiosConfig";
-import { API_ENDPOINTS } from "./endpoints";
+// src/api/services/products/inventarioService.js
+import axiosInstance from "../../axios.config";
+import { API_ENDPOINTS } from "../../endpoints";
 
 // Obtener todos los inventarios
 export const getInventario = async () => {

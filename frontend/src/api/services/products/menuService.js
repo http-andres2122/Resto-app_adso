@@ -1,4 +1,4 @@
-// src/api/menuService.js
+// src/api/services/products/menuService.js
 import axiosInstance from "./axiosConfig";
 import { API_ENDPOINTS } from "./endpoints";
 

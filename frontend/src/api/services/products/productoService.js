@@ -1,6 +1,6 @@
-// src/api/productoService.js
-import axiosInstance from "./axiosConfig";
-import { API_ENDPOINTS } from "./endpoints";
+// src/api/services/products/productoService.js
+import axiosInstance from "../../axios.config";
+import { API_ENDPOINTS } from "../../endpoints";
 
 // Obtener todos los productos
 export const getProductos = async () => {

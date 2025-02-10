@@ -1,6 +1,6 @@
-// src/api/categoriaService.js
-import axiosInstance from "./axiosConfig";
-import { API_ENDPOINTS } from "./endpoints";
+// src/api/services/products/categoriaService.js
+import axiosInstance from "../../axios.config";
+import { API_ENDPOINTS } from "../../endpoints";
 
 // Obtener todas las categorías
 export const getCategorias = async () => {

@@ -24,9 +24,10 @@ export const API_ENDPOINTS = {
   // Productos
   getProductos: "/productos",
   getProductoById: (id) => `/productos/${id}`,
-  createProducto: "/productos",
-  updateProducto: (id) => `/productos/${id}`,
-  deleteProducto: (id) => `/productos/${id}`,
+  getProductoByCategoryId: (id) => `/productos/category/${id}`,
+  createProducto: "/productos/addProduct",
+  updateProducto: (id) => `/productos/updateProduct/${id}`,
+  deleteProducto: (id) => `/productos/deleteProduct/${id}`,
 
   // Pedidos
   getPedidos: "/pedidos",
@@ -66,9 +67,9 @@ export const API_ENDPOINTS = {
   // Categorias
   getCategorias: "/categorias",
   getCategoriaById: (id) => `/categorias/${id}`,
-  createCategoria: "/categorias",
-  updateCategoria: (id) => `/categorias/${id}`,
-  deleteCategoria: (id) => `/categorias/${id}`,
+  createCategoria: "/categorias/createCategory",
+  updateCategoria: (id) => `/categorias/updateCategory/${id}`,
+  deleteCategoria: (id) => `/categorias/deleteCategory/${id}`,
 
   // Historial Inventario
   getHistorialInventario: "/historial_inventario",

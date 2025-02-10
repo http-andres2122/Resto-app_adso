@@ -45,7 +45,7 @@ app.use(cors(corsOptions)); // Usa CORS con las opciones configuradas
 app.use(express.json()); // Middleware para parsear el body de las peticiones JSON
 
 // Rutas públicas
-app.get("/api/productos", productosController.getAllWithCategory);
+app.get("/api/productos", productosController.getAllProductos);
 app.get("/api/menu", menuController.obtenerMenu);
 app.get("/api/reservas", reservasController.getAllReservas);
 

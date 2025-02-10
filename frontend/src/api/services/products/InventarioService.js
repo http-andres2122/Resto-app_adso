@@ -38,10 +38,10 @@ export const createInventario = async (data) => {
 };
 
 // Actualizar un inventario
-export const updateInventario = async (id, data) => {
+export const updateInventario = async (data) => {
   try {
     const response = await axiosInstance.put(
-      API_ENDPOINTS.updateInventario(id),
+      API_ENDPOINTS.updateInventario(data.producto_id),
       data
     );
     return response.data;

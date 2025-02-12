@@ -1,16 +1,29 @@
-import React, { useContext } from 'react';
-import { Navigate } from 'react-router-dom';
-import { AuthContext } from '../context/AuthContext';
+import React, { useContext, useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
 const ProtectedRoute = ({ children }) => {
-    const { isAuthenticated } = useContext(AuthContext); // Usamos isAuthenticated
-    console.log("protected route: estado del verifyAuth:", isAuthenticated)
+  const { isAuthenticated, isLoading } = useContext(AuthContext);
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
-    if (!isAuthenticated) { // Comprobamos isAuthenticated directamente
-        return <Navigate to="/login" replace />;
-    }
+  useEffect(() => {
+    // Espera un ciclo de renderizado para evitar redirecciones incorrectas
+    const timer = setTimeout(() => {
+      setCheckingAuth(false);
+    }, 500); // Pequeño retraso para asegurar que el estado es el correcto
 
-    return children;
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (isLoading || checkingAuth) {
+    return <div className="text-center mt-4">Cargando...</div>; // Mensaje de carga mientras verifica
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
 };
 
 export default ProtectedRoute;

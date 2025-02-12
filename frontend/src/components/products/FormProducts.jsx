@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import DynamicForm from "../DynamicForm";
 import CategorySelector from "./CategorySelector";
 import useProductStore from "../../store/ProductStore.jsx";
@@ -13,15 +13,23 @@ const fieldsProducto = [
 function FormProducts() {
   const { setShowAddProduct } = useProductStore();
   const formRef = useRef();
+  const [selectedCategory, setSelectedCategory] = useState(""); // Guardar la categoría seleccionada
 
   const onSubmit = (data) => {
-    console.log("Producto agregado:", data);
+    // Asegurarse de agregar la categoría como número al objeto de datos
+    const productData = { ...data, category: selectedCategory };
+    console.log("Producto agregado:", productData);
     setShowAddProduct(false); // Ocultar el formulario después de agregar el producto
   };
 
   const onCancel = () => {
     setShowAddProduct(false);
     console.log("Formulario cancelado");
+  };
+
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category); // Actualizar la categoría seleccionada (número)
+    console.log("Categoría seleccionada:", category);
   };
 
   const handleAddProduct = () => {
@@ -38,7 +46,10 @@ function FormProducts() {
       <DynamicForm ref={formRef} fields={fieldsProducto} onSubmit={onSubmit} />
 
       {/* Selector de categorías */}
-      <CategorySelector />
+      <CategorySelector
+        selectedCategory={selectedCategory} // Número de la categoría seleccionada
+        onCategoryChange={handleCategoryChange} // Actualizar la categoría con número
+      />
 
       {/* Botones */}
       <div className="flex gap-2 mt-4">

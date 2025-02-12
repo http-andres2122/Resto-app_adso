@@ -1,6 +1,6 @@
-// src/api/inventarioService.js
-import axiosInstance from "./axiosConfig";
-import { API_ENDPOINTS } from "./endpoints";
+// src/api/services/products/inventarioService.js
+import axiosInstance from "../../axios.config";
+import { API_ENDPOINTS } from "../../endpoints";
 
 // Obtener todos los inventarios
 export const getInventario = async () => {
@@ -38,10 +38,10 @@ export const createInventario = async (data) => {
 };
 
 // Actualizar un inventario
-export const updateInventario = async (id, data) => {
+export const updateInventario = async (data) => {
   try {
     const response = await axiosInstance.put(
-      API_ENDPOINTS.updateInventario(id),
+      API_ENDPOINTS.updateInventario(data.producto_id),
       data
     );
     return response.data;

@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import DynamicForm from "../DynamicForm";
-import CategorySelector from "./CategorySelector";
-import useProductStore from "../../store/ProductStore.jsx";
+import CategorySelector from "./categorySelector";
+import useProductStore from "../../store/ProductStore";
 
 const fieldsProducto = [
   { name: "nombre", label: "Nombre", type: "text", required: true },
@@ -11,15 +11,27 @@ const fieldsProducto = [
 ];
 
 function FormProducts() {
-  const { setShowAddProduct } = useProductStore();
+  const { setShowAddProduct, addProduct } = useProductStore();
   const formRef = useRef();
-  const [selectedCategory, setSelectedCategory] = useState(""); // Guardar la categoría seleccionada
+  const [selectCategory, setSelectCategory] = useState(""); // Guardar la categoría seleccionada
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
+    console.log("Datos del formulario:", data);
     // Asegurarse de agregar la categoría como número al objeto de datos
-    const productData = { ...data, category: selectedCategory };
+    const productData = {
+      ...data,
+      cantidadInicial: data.stock,
+      categoriaId: selectCategory,
+    };
+    delete productData.stock; // Eliminar la propiedad stock
     console.log("Producto agregado:", productData);
-    setShowAddProduct(false); // Ocultar el formulario después de agregar el producto
+    try {
+      await addProduct(productData); // Agregar el producto a la API
+      console.log("Producto agregado con éxito");
+      setShowAddProduct(false); // Ocultar el formulario después de agregar el producto
+    } catch (error) {
+      console.error("Error adding product:", error);
+    }
   };
 
   const onCancel = () => {
@@ -28,7 +40,7 @@ function FormProducts() {
   };
 
   const handleCategoryChange = (category) => {
-    setSelectedCategory(category); // Actualizar la categoría seleccionada (número)
+    setSelectCategory(category); // Actualizar la categoría seleccionada (número)
     console.log("Categoría seleccionada:", category);
   };
 
@@ -47,8 +59,7 @@ function FormProducts() {
 
       {/* Selector de categorías */}
       <CategorySelector
-        selectedCategory={selectedCategory} // Número de la categoría seleccionada
-        onCategoryChange={handleCategoryChange} // Actualizar la categoría con número
+        selectCategory={handleCategoryChange} // Número de la categoría seleccionada
       />
 
       {/* Botones */}

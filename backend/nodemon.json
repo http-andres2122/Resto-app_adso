@@ -2,6 +2,6 @@
     "watch": ["server.js", "routes/", "controllers/", "./"],
     "ext": "js,json",
     "ignore": ["node_modules/", "public/"],
-    "exec": "node server.js"
+    "exec": "deno run --allow-all server.js"
 }
   

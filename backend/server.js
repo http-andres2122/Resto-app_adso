@@ -1,5 +1,5 @@
 import app from "./app.js";
-import os from "os";
+import os from "node:os";
 
 // Función para obtener la IP local
 function getLocalIP() {

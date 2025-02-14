@@ -3,10 +3,11 @@ import useProductStore from "../../store/ProductStore";
 import DynamicSelector from "../DynamicSelector";
 import AddOptionModal from "../AddOptionModel";
 
-function CategorySelector(selectedCategory, onCategoryChange) {
+function CategorySelector({ selectCategory }) {
   const { categories, fetchCategories, addCategory, deleteCategory } =
     useProductStore();
   const [showAddOptionModal, setShowAddOptionModal] = useState(false); // Mostrar modal
+  const [selectedCategory, setSelectedCategory] = useState(""); // Guardar la categoría seleccionada
 
   // Cargar las categorías al montar el componente
   useEffect(() => {
@@ -19,7 +20,8 @@ function CategorySelector(selectedCategory, onCategoryChange) {
   const handleSelectChange = (value) => {
     const numericValue = parseInt(value, 10); // Aseguramos que el valor sea un número
     console.log("Nueva categoría seleccionada:", numericValue);
-    onCategoryChange(numericValue); // Pasamos el número al componente padre
+    setSelectedCategory(numericValue); // guardamos el id de la categoría seleccionada
+    selectCategory(numericValue); // Pasamos el id de la categoría al componente padre
   };
 
   const handleAddOption = async (name) => {

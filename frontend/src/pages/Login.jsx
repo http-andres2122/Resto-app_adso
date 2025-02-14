@@ -11,19 +11,23 @@ export default function Login() {
   const [email, setEmail] = useState(""); // Estado para el email, inicializado como string vacío
   const [password, setPassword] = useState(""); // Estado para la contraseña, inicializado como string vacío
 
+  // Función para manejar el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault(); // Previene la recarga de la página
-
+    // Llama a la función de autenticación con los datos del formulario
     try {
       await login(email, password); // Espera a que la autenticación se complete
     } catch (error) {
+      // Manejo de errores
       console.error("Error en el login:", error);
     }
   };
 
   // Redirige a /dashboard si el usuario está autenticado
   useEffect(() => {
+    // comprobamos el estado de isAuthenticated
     if (isAuthenticated) {
+      //si es true navegamos s /dashboard
       navigate("/dashboard");
     }
   }, [isAuthenticated, navigate]); // 🔥 Se ejecuta cuando cambia isAuthenticated

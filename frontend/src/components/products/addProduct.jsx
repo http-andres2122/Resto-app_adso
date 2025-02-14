@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import FormProducts from "./formProducts";
+import FormProducts from "./FormProducts.jsx";
 
 const AddProduct = () => {
   // Recibe la prop onCancel

@@ -25,7 +25,7 @@ export const API_ENDPOINTS = {
   getProductos: "/productos",
   getProductoById: (id) => `/productos/${id}`,
   getProductoByCategoryId: (id) => `/productos/category/${id}`,
-  createProducto: "/productos/addProduct",
+  createProducto: "/productos/addProduct/",
   updateProducto: (id) => `/productos/updateProduct/${id}`,
   deleteProducto: (id) => `/productos/deleteProduct/${id}`,
 

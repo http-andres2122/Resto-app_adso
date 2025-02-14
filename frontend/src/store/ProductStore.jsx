@@ -37,7 +37,8 @@ const useProductStore = create((set) => ({
   addProduct: async (newProduct) => {
     try {
       const response = await productoService.createProducto(newProduct);
-      set((state) => ({ products: [...state.products, response] }));
+      fetchProducts();
+      console.log("Producto agregado:", response);
     } catch (error) {
       console.error("Error adding product:", error);
     }

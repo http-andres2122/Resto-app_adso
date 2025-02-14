@@ -16,23 +16,62 @@ export const AuthContext = createContext({
 
 const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem("authToken") || null);
+  const [token, setToken] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(null);
   const [errorDetails, setErrorDetails] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(!!token); // 🔥 Se inicializa correctamente
+  const [isAuthenticated, setIsAuthenticated] = useState(); // 🔥 Se inicializa correctamente
+
+  // 🚀 Cargar token y usuario desde localStorage al montar el componente
+  useEffect(() => {
+    const storedToken = localStorage.getItem("authToken");
+    //const storedUser = localStorage.getItem("user");
+
+    if (storedToken) {
+      setToken(storedToken);
+      setIsAuthenticated(true); // Establece la autenticación como verdadera
+    }
+  }, []);
 
   // 🚀 Verifica autenticación cuando cambia el token
   useEffect(() => {
     if (token) {
       setIsAuthenticated(true);
       handleGetProfile(); // 🔥 Carga el usuario automáticamente si hay token
+      startTokenValidationTimer(); // Inicia el temporizador para validar el token
     } else {
       setIsAuthenticated(false);
       setUser(null);
     }
   }, [token]);
 
+  // Función para verificar si el token ha expirado (si es un JWT)
+  const isTokenExpired = (token) => {
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1])); // Decodifica el JWT
+      const expiry = payload.exp * 1000; // Expiración en milisegundos
+      const currentTime = Date.now();
+      return currentTime > expiry; // Si el tiempo actual es mayor que la expiración, el token ha expirado
+    } catch (e) {
+      console.error("Error al verificar el token:", e);
+      return true; // Si hay un error, asumimos que el token ha expirado
+    }
+  };
+
+  // Función para iniciar el temporizador que valida el token
+  const startTokenValidationTimer = () => {
+    const intervalId = setInterval(() => {
+      if (token && isTokenExpired(token)) {
+        handleLogout(); // Si el token ha expirado, cierra sesión
+      }
+    }, 5 * 60 * 1000); // Verifica cada 5 minutos (5000 ms)
+    console.log("interval", intervalId);
+    return intervalId;
+  };
+  {
+    /*======================================================================== */
+  }
+  //login
   const handleLogin = async (email, password) => {
     setIsLoading(true);
     setIsError(null);
@@ -53,6 +92,7 @@ const AuthContextProvider = ({ children }) => {
     }
   };
 
+  //register
   const handleRegister = async (data) => {
     setIsLoading(true);
     setIsError(null);
@@ -66,6 +106,7 @@ const AuthContextProvider = ({ children }) => {
     }
   };
 
+  //logout
   const handleLogout = async () => {
     setIsLoading(true);
     setIsError(null);
@@ -74,6 +115,8 @@ const AuthContextProvider = ({ children }) => {
       localStorage.removeItem("authToken");
       localStorage.removeItem("user");
       setToken(null);
+      setIsAuthenticated(false);
+      clearInterval(tokenValidationInterval); // Limpia el temporizador cuando el usuario cierra sesión
     } catch (error) {
       handleAuthError(error);
     } finally {
@@ -81,6 +124,7 @@ const AuthContextProvider = ({ children }) => {
     }
   };
 
+  // get profile
   const handleGetProfile = async () => {
     if (!token) return; // 🔥 Evita llamadas innecesarias
     setIsLoading(true);
@@ -90,7 +134,8 @@ const AuthContextProvider = ({ children }) => {
       const response = await authService.getProfile();
       if (response?.user) {
         setUser(response.user);
-        localStorage.setItem("user", JSON.stringify(response.user));
+        console.log(user);
+        //localStorage.setItem("user", JSON.stringify(response.user));
       } else {
         throw new Error("No se pudo obtener el perfil del usuario.");
       }

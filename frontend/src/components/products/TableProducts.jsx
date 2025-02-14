@@ -9,7 +9,7 @@ function TableProducts() {
   // Cargar productos cuando el componente se monta
   useEffect(() => {
     fetchProducts();
-    console.log(products);
+    console.log("useEffect1", products);
   }, []);
 
   // Función para manejar la acción de editar un producto

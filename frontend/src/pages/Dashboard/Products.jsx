@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import AddProduct from "../../components/products/AddProduct.jsx";
-import EditProduct from "./../../components/products/editProduct";
+import EditProduct from "../../components/products/EditProduct.jsx";
 import TableProducts from "./../../components/products/TableProducts.jsx";
 import useProductStore from "../../store/ProductStore.jsx";
 export default function Products() {

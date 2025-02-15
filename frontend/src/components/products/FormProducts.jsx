@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import DynamicForm from "../DynamicForm";
-import CategorySelector from "./categorySelector";
+import CategorySelector from "./CategorySelector";
 import useProductStore from "../../store/ProductStore";
 
 const fieldsProducto = [

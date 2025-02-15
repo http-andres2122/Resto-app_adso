@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import * as productoService from "../../api/services/products/productoService";
-import * as inventarioService from "../../api/services/products/inventarioService";
-import * as categoriaService from "../../api/services/products/categoriaService"; //
+import * as inventarioService from "../../api/services/products/InventarioService";
+import * as categoriaService from "../../api/services/products/categoriaService";
 import CategorySelector from "./CategorySelector";
 
 export default function editProduct({ onCancel, product }) {

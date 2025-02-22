@@ -91,8 +91,8 @@ const productosController = {
    *   "nombre": "Nombre del producto",
    *   "descripcion": "Descripción del producto",
    *   "precio": 10.50,
-   *   "categoriaId": 3,
-   *   "cantidadInicial": 50
+   *   "categoria_id": 3,
+   *   "stock": 50
    * }
    * Respuesta esperada:
    * {
@@ -102,11 +102,10 @@ const productosController = {
    * }
    */
   addProduct: (req, res) => {
-    const { nombre, descripcion, precio, categoriaId, cantidadInicial } =
-      req.body;
+    const { nombre, descripcion, precio, categoria_id, stock } = req.body;
 
     // Validar que se reciban los campos mínimos
-    if (!nombre || !precio || !categoriaId || cantidadInicial === undefined) {
+    if (!nombre || !precio || !categoria_id || stock === undefined) {
       return res.status(400).json({ error: "Faltan datos obligatorios" });
     }
 
@@ -114,8 +113,8 @@ const productosController = {
       nombre,
       descripcion,
       precio,
-      categoriaId,
-      cantidadInicial,
+      categoria_id,
+      stock,
       (err, result) => {
         if (err) {
           return res.status(400).json({ error: err.message });

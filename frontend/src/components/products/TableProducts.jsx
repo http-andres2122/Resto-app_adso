@@ -4,7 +4,7 @@ import useProductStore from "../../store/ProductStore";
 
 function TableProducts() {
   // Extraer productos y la función fetch desde Zustand
-  const { products, fetchProducts, deleteProduct } = useProductStore();
+  const { products, fetchProducts, deleteProduct, setProductToEdit, setShowEditProduct } = useProductStore();
 
   // Cargar productos cuando el componente se monta
   useEffect(() => {
@@ -14,6 +14,8 @@ function TableProducts() {
 
   // Función para manejar la acción de editar un producto
   const handleEditClick = (product) => {
+    setProductToEdit(product);
+    setShowEditProduct(true);
     console.log("Editar producto in table component:", product);
     // Aquí puedes abrir un modal, redireccionar a otra ruta, etc.
   };

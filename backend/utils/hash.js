@@ -1,5 +1,4 @@
-import bcrypt from "bcrypt";
-
+import bcrypt from "bcryptjs";
 
 /**
  * Función para generar una contraseña hasheada

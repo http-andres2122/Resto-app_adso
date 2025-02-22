@@ -2,14 +2,13 @@
 import { create } from "zustand";
 import * as productoService from "../api/services/products/productoService";
 import * as categoriaService from "../api/services/products/categoriaService";
-// Importa el servicio de productos
-import axios from "axios";
 
-const useProductStore = create((set) => ({
+const useProductStore = create((set, get) => ({
   products: [],
   categories: [],
   showAddProduct: false,
   showEditProduct: false,
+  productToEdit: [null],
 
   // opcion de mostrar el formulario de agregar producto
   setShowAddProduct: (value) => {
@@ -18,8 +17,18 @@ const useProductStore = create((set) => ({
   },
 
   //opcion de mostrar el formulario de editar producto
-  setShowEditProduct: () => {
-    set((state) => ({ showEditProduct: !state.showEditProduct }));
+  setShowEditProduct: (vale) => {
+    set({ showEditProduct: vale });
+  },
+
+  //opcion de editar producto
+  setProductToEdit: (product) => {
+    set({ productToEdit: product });
+  },
+
+  //limpiar el producto a editar
+  clearProductToEdit: () => {
+    set({ productToEdit: null });
   },
 
   // Obtener productos desde la API
@@ -37,10 +46,15 @@ const useProductStore = create((set) => ({
   addProduct: async (newProduct) => {
     try {
       const response = await productoService.createProducto(newProduct);
-      fetchProducts();
-      console.log("Producto agregado:", response);
+      console.log("Producto agregado en el servidor:", response);
+
+      const { fetchProducts } = get(); // Obtener fetchProducts usando get()
+      await fetchProducts();
+
+      return response;
     } catch (error) {
       console.error("Error adding product:", error);
+      throw error; // Re-lanza el error para que se maneje en el componente
     }
   },
 

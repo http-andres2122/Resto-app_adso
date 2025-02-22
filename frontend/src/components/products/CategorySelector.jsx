@@ -3,16 +3,28 @@ import useProductStore from "../../store/ProductStore";
 import DynamicSelector from "../DynamicSelector";
 import AddOptionModal from "../AddOptionModel";
 
-function CategorySelector({ selectCategory }) {
+function CategorySelector({ selectCategory, initialSelectedCategoryId }) {
   const { categories, fetchCategories, addCategory, deleteCategory } =
     useProductStore();
   const [showAddOptionModal, setShowAddOptionModal] = useState(false); // Mostrar modal
   const [selectedCategory, setSelectedCategory] = useState(""); // Guardar la categoría seleccionada
 
+  useEffect(() => {
+    // Si se recibe un ID inicial, se establece como la categoría seleccionada
+    if (initialSelectedCategoryId) {
+      setSelectedCategory(initialSelectedCategoryId);
+    }
+  }, [initialSelectedCategoryId]);
+
   // Cargar las categorías al montar el componente
   useEffect(() => {
     const loadCategories = async () => {
-      await fetchCategories();
+      try {
+        await fetchCategories();
+      } catch (error) {
+        console.error("Error al cargar las categorías:", error);
+        // Mostrar un mensaje de error al usuario (opcional)
+      }
     };
     loadCategories();
   }, []);
@@ -25,16 +37,26 @@ function CategorySelector({ selectCategory }) {
   };
 
   const handleAddOption = async (name) => {
+    if (!name || name.trim === "") {
+      alert("Por favor, ingrese un nombre valido para la categoría.");
+      return;
+    }
+
     if (
       categories.some((cat) => cat.nombre.toLowerCase() === name.toLowerCase())
     ) {
       alert("Esta categoría ya existe.");
       return;
     }
-    const newCategory = { nombre: name };
-    const addedCategory = await addCategory(newCategory);
-    if (addedCategory && addedCategory.id) {
-      onCategoryChange(addedCategory.id); // Seleccionamos la nueva categoría automáticamente
+    try {
+      const newCategory = { nombre: name };
+      const addedCategory = await addCategory(newCategory);
+
+      if (addedCategory && addedCategory.id) {
+        onCategoryChange(addedCategory.id); // Seleccionamos la nueva categoría automáticamente
+      }
+    } catch (error) {
+      console.error("Error al agregar la categoría:", error);
     }
     setShowAddOptionModal(false);
   };

@@ -20,6 +20,7 @@ export default defineConfig(() => {
         },
       },
       historyApiFallback: true,
+      allowedHosts: ["andres2122.ddns.net"],
     },
     build: {
       rollupOptions: {

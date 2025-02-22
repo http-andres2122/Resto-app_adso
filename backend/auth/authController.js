@@ -1,5 +1,5 @@
 import verifyToken from "../utils/jwt.js"; // Importar la utilidad
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import generateToken from "../utils/generateToken.js";
 import usuario from "../models/users/usuarioModel.js";
 import db from "../config/db.js";

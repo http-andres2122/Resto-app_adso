@@ -30,9 +30,11 @@ export default function Products() {
       <div>
         {/* Título */}
         <h2 className="text-3xl font-bold mb-6"> Gestión de Productos</h2>
+
         {/* Botón para agregar producto */}
         <div className="mb-4">
-          {!showAddProduct && ( // Muestra el botón solo si el formulario está oculto
+          {/* muestra el botón solo si showAddProduct y showEditProduct son falsos */}
+          {!showAddProduct && !showEditProduct && (
             <button
               className="px-6 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-400"
               onClick={() => setShowAddProduct(true)} // Muestra el formulario al hacer clic
@@ -40,13 +42,22 @@ export default function Products() {
               + Agregar Producto
             </button>
           )}
-
-          {showAddProduct && ( // Muestra el formulario solo si showAddProduct es true
+          {/* Muestra el formulario agreagar solo si showAddProduct es true y showEditProduct es false */}
+          {showAddProduct && !showEditProduct && (
             <div className="mt-4">
               {/* Agrega un margen superior */}
               <AddProduct />
             </div>
           )}
+
+          {/* Muestra el formulario de editar solo si showEditProduct es true */}
+          {showEditProduct && (
+            <div className="mt-4">
+              {/* Agrega un margen superior */}
+              <EditProduct />
+            </div>
+          )}
+
         </div>
 
         {/* Tabla de Productos */}
@@ -56,11 +67,11 @@ export default function Products() {
       </div>
 
       {/*edit zone */}
-      {showEditProduct && (
+      {/* {showEditProduct && (
         <div>
           <EditProduct onCancel={() => setShowEditProduct()} />
         </div>
-      )}
+      )} */}
     </div>
   );
 }

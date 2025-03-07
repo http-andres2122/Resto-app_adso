@@ -53,7 +53,7 @@ function CategorySelector({ selectCategory, initialSelectedCategoryId }) {
       const addedCategory = await addCategory(newCategory);
 
       if (addedCategory && addedCategory.id) {
-        onCategoryChange(addedCategory.id); // Seleccionamos la nueva categoría automáticamente
+        setSelectedCategory(addedCategory.id); // Seleccionamos la nueva categoría automáticamente
       }
     } catch (error) {
       console.error("Error al agregar la categoría:", error);

@@ -143,15 +143,15 @@ const productosController = {
    */
   updateProducto: (req, res) => {
     const { id } = req.params;
-    const { nombre, descripcion, precio, categoriaId, nuevaCantidad } =
+    const { nombre, descripcion, precio, categoria_id, stock } =
       req.body;
 
     if (
       !nombre &&
       !descripcion &&
       !precio &&
-      !categoriaId &&
-      nuevaCantidad === undefined
+      !categoria_id &&
+      stock === undefined
     ) {
       return res.status(400).json({
         success: false,
@@ -164,8 +164,8 @@ const productosController = {
       nombre,
       descripcion,
       precio,
-      categoriaId,
-      nuevaCantidad,
+      categoria_id,
+      stock,
       (err, result) => {
         if (err) {
           return res.status(500).json({

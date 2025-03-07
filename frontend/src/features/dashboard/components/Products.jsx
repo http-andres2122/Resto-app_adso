@@ -65,13 +65,6 @@ export default function Products() {
           <TableProducts />
         </div>
       </div>
-
-      {/*edit zone */}
-      {/* {showEditProduct && (
-        <div>
-          <EditProduct onCancel={() => setShowEditProduct()} />
-        </div>
-      )} */}
     </div>
   );
 }

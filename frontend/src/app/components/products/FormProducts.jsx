@@ -20,10 +20,12 @@ function FormProducts() {
   const formRef = useRef();
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const [isEditing, setIsEditing] = useState(false);
+  console.log("isEditing 1:", isEditing);
 
   { /*Efecto para precargar datos cuando hay un producto a editar*/ }
   useEffect(() => {
     if (productToEdit) {
+      console.log("Producto a editar:", productToEdit);
       setSelectedCategoryId(productToEdit.categoria_id || ""); // Cargar categoría existente'
       setIsEditing(true); //Establecer isEditing a true si hay un producto para editar
     } else {
@@ -35,14 +37,14 @@ function FormProducts() {
   const onSubmit = async (data) => {
     const productData = {
       ...data,
-      categoria_id: selectedCategoryId,
+      categoria_id: selectedCategoryId
     };
 
     try {
       if (isEditing) {
         // Si isEditing es true, se actualiza
         await editProduct(productToEdit.id, productData);
-        console.log("Producto actualizado con éxito");
+        console.log("Producto:", productData);
         setShowEditProduct(false); //cerrar el formulario de edición
         clearProductToEdit(); //limpiar el producto a editar
       } else {
@@ -57,6 +59,7 @@ function FormProducts() {
   };
   { /* Función para cancelar la creación de un producto */ }
   const onCancel = () => {
+    console.log("isEditing:", isEditing);
     if (isEditing) {
       setShowEditProduct(false);
       clearProductToEdit();
@@ -98,7 +101,7 @@ function FormProducts() {
           onClick={handleSubmitForm}
           className="px-6 py-2 bg-blue-600 text-white font-semibold rounded"
         >
-          {productToEdit ? "Actualizar Producto" : "+ Agregar Producto"}
+          {isEditing ? "Actualizar Producto" : "+ Agregar Producto"}
         </button>
 
         <button

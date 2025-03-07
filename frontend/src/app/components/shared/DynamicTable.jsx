@@ -10,6 +10,8 @@ function DynamicTable({
   data,
   handleEditClick,
   handleDeleteClick,
+  handleDetailsClick,
+  handleCancelClick,
 }) {
   // Memoizamos las columnas para evitar re-renderizados innecesarios
   const columns = useMemo(() => columnsConfig, [columnsConfig]);
@@ -35,9 +37,9 @@ function DynamicTable({
                   {header.isPlaceholder
                     ? null
                     : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
                 </th>
               ))}
             </tr>
@@ -51,9 +53,8 @@ function DynamicTable({
                   key={cell.id}
                   // Aquí se asignan clases base para cada celda;
                   // si se necesita alineación o estilos específicos, se puede configurar en el columnDef
-                  className={`px-6 py-4 text-gray-800 dark:text-gray-200 ${
-                    cell.column.columnDef.meta?.align || "text-left"
-                  }`}>
+                  className={`px-6 py-4 text-gray-800 dark:text-gray-200 ${cell.column.columnDef.meta?.align || "text-left"
+                    }`}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </td>
               ))}

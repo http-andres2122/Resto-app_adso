@@ -8,7 +8,7 @@ const useProductStore = create((set, get) => ({
   categories: [],
   showAddProduct: false,
   showEditProduct: false,
-  productToEdit: [null],
+  productToEdit: null,
 
   // opcion de mostrar el formulario de agregar producto
   setShowAddProduct: (value) => {
@@ -61,12 +61,37 @@ const useProductStore = create((set, get) => ({
   // Editar producto
   editProduct: async (id, updatedProduct) => {
     try {
-      await productoService.updateProducto(id, updatedProduct);
-      set((state) => ({
-        products: state.products.map((product) =>
-          product.id === id ? { ...product, ...updatedProduct } : product
-        ),
-      }));
+      // Obtener las categorías del estado
+      const categories = get().categories; // Asegúrate de que 'categories' esté en tu estado inicial de Zustand
+      console.log("categories", categories);
+
+      // Encontrar el nombre de la categoría basado en el categoria_id
+      const category = categories.find(cat => cat.id === updatedProduct.categoria_id);
+      console.log("category", category);
+      const categoria_nombre = category ? category.nombre : "Sin categoría";
+      console.log("categoria_nombre", categoria_nombre);
+
+      // Crear una nueva versión de updatedProduct con el categoria_nombre actualizado
+      const updatedProductWithCategory = {
+        ...updatedProduct,
+        categoria_nombre: categoria_nombre
+      };
+
+      // Actualizar en el servidor
+      const data = await productoService.updateProducto(id, updatedProductWithCategory);
+      console.log("array update product", updatedProductWithCategory);
+
+      // Actualizar el estado
+      set((state) => {
+        const updatedProducts = state.products.map((product) =>
+          product.id === id ? { ...product, ...updatedProductWithCategory } : product
+        );
+        console.log("update products", updatedProducts);
+        console.log("Producto editado en el servidor:", data);
+        return { products: updatedProducts };
+      });
+
+      return data;
     } catch (error) {
       console.error("Error editing product:", error);
     }

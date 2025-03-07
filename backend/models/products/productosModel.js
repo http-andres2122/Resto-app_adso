@@ -71,18 +71,11 @@ const productos = {
    * @param {string} nombre - Nombre del producto.
    * @param {string} descripcion - Descripción del producto.
    * @param {number} precio - Precio del producto.
-   * @param {number} categoriaId - ID de la categoría (debe existir en la tabla 'categorias').
-   * @param {number} cantidadInicial - Cantidad inicial para el inventario.
+   * @param {number} categoria_id - ID de la categoría (debe existir en la tabla 'categorias').
+   * @param {number} stock - Cantidad inicial para el inventario.
    * @param {function} callback - Función callback para manejar el resultado.
    */
-  addProduct: (
-    nombre,
-    descripcion,
-    precio,
-    categoriaId,
-    cantidadInicial,
-    callback
-  ) => {
+  addProduct: (nombre, descripcion, precio, categoria_id, stock, callback) => {
     // Iniciar una transacción
     db.beginTransaction((err) => {
       if (err) return callback(err, null);
@@ -108,7 +101,7 @@ const productos = {
           // 1. Buscar el ID de la categoría por nombre
           db.query(
             "SELECT id FROM categorias WHERE id = ? LIMIT 1",
-            [categoriaId],
+            [categoria_id],
             (err, categorias) => {
               if (err) {
                 return db.rollback(() => callback(err, null));
@@ -126,7 +119,7 @@ const productos = {
               // 2. Insertar el nuevo producto
               db.query(
                 "INSERT INTO productos (nombre, descripcion, precio, categoria_id) VALUES (?, ?, ?, ?)",
-                [nombre, descripcion, precio, categoriaId],
+                [nombre, descripcion, precio, categoria_id],
                 (err, resultProducto) => {
                   if (err) {
                     return db.rollback(() => callback(err, null));
@@ -137,7 +130,7 @@ const productos = {
                   // 3. Insertar el registro en inventario para el nuevo producto
                   db.query(
                     "INSERT INTO inventario (producto_id, cantidad_actual, fecha_ultima_actualizacion) VALUES (?, ?, NOW())",
-                    [productoId, cantidadInicial],
+                    [productoId, stock],
                     (err) => {
                       if (err) {
                         return db.rollback(() => callback(err, null));
@@ -166,12 +159,12 @@ const productos = {
 
   /**
    * Actualiza un producto y su stock en la base de datos.
-   * @param {number} productoId - ID del producto a actualizar.
+   * @param {number} id - ID del producto a actualizar.
    * @param {string} nombre - Nuevo nombre del producto.
    * @param {string} descripcion - Nueva descripción del producto.
    * @param {number} precio - Nuevo precio del producto.
-   * @param {number} categoriaId - Nueva categoría del producto (opcional, debe existir).
-   * @param {number} nuevaCantidad - Nueva cantidad en inventario (opcional).
+   * @param {number} categoria_id - Nueva categoría del producto (opcional, debe existir).
+   * @param {number} stock - Nueva cantidad en inventario (opcional).
    * @param {function} callback - Función callback para manejar el resultado.
    */
   updateProduct: (
@@ -179,8 +172,8 @@ const productos = {
     nombre,
     descripcion,
     precio,
-    categoriaId,
-    nuevaCantidad,
+    categoria_id,
+    stock,
     callback
   ) => {
     db.beginTransaction((err) => {
@@ -199,10 +192,10 @@ const productos = {
           }
 
           // Verificar si la categoría existe (si se proporciona un cambio de categoría)
-          if (categoriaId) {
+          if (categoria_id) {
             db.query(
               "SELECT id FROM categorias WHERE id = ?",
-              [categoriaId],
+              [categoria_id],
               (err, categorias) => {
                 if (err) return db.rollback(() => callback(err, null));
                 if (categorias.length === 0) {
@@ -215,7 +208,8 @@ const productos = {
               }
             );
           } else {
-            actualizarProducto();
+            console.log("No se proporcionó una nueva categoría.");
+            return null;
           }
 
           function actualizarProducto() {
@@ -226,14 +220,14 @@ const productos = {
                 nombre,
                 descripcion,
                 precio,
-                categoriaId || productos[0].categoria_id,
+                categoria_id || productos[0].categoria_id,
                 productoId,
               ],
               (err, result) => {
                 if (err) return db.rollback(() => callback(err, null));
 
                 // Si no hay cambio de cantidad, finalizar la transacción
-                if (nuevaCantidad === undefined) {
+                if (stock === undefined) {
                   return db.commit((err) => {
                     if (err) return db.rollback(() => callback(err, null));
                     callback(null, {
@@ -260,12 +254,12 @@ const productos = {
                     }
 
                     const cantidadAnterior = inventario[0].cantidad_actual;
-                    const diferenciaCantidad = nuevaCantidad - cantidadAnterior;
+                    const diferenciaCantidad = stock - cantidadAnterior;
 
                     // Actualizar la cantidad en el inventario
                     db.query(
                       "UPDATE inventario SET cantidad_actual = ?, fecha_ultima_actualizacion = NOW() WHERE producto_id = ?",
-                      [nuevaCantidad, productoId],
+                      [stock, productoId],
                       (err) => {
                         if (err) return db.rollback(() => callback(err, null));
 

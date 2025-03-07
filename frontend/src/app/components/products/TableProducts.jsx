@@ -22,8 +22,11 @@ function TableProducts() {
 
   //funcion para manejar el eliminar un producto
   const handleDeleteClick = (product) => {
-    console.log("Eliminar producto in table component:", product);
-    deleteProduct(product.id);
+    if (window.confirm(`¿Estás seguro de eliminar el producto ${product.nombre}?`)) {
+      console.log("Eliminar producto in table component:", product);
+      deleteProduct(product.id);
+    }
+
   };
 
   // Configuración de las columnas de la tabla
@@ -49,7 +52,7 @@ function TableProducts() {
         accessorKey: "precio",
         // Formatea el precio a dos decimales y lo antepone con '$'
         cell: (info) => `$${Number(info.getValue()).toFixed(2)}`,
-        meta: { align: "text-right" },
+        meta: { align: "text-left" },
       },
       {
         header: "Stock",
@@ -68,7 +71,7 @@ function TableProducts() {
             </span>
           );
         },
-        meta: { align: "text-right" },
+        meta: { align: "text-center" },
       },
       {
         header: "Acciones",
@@ -90,8 +93,7 @@ function TableProducts() {
         meta: { align: "text-center" },
       },
     ],
-    [handleEditClick],
-    [handleDeleteClick]
+    [handleEditClick, handleDeleteClick]
   );
 
   return (

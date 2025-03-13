@@ -1,13 +1,18 @@
 import React, { useMemo, useEffect } from "react";
 import DynamicTable from "../shared/DynamicTable";
+import useOrderStore from "../../store/OrderStore";
 
 export default function TableOrders() {
+    //store zustand
+    const { setEditOrder, setAddOrder } = useOrderStore();
+
     const orders = [
         { id: 101, customer: "Juan Pérez", items: 3, total: 25.5, status: "Pendiente", date: "2024-12-03" },
         { id: 102, customer: "Ana Gómez", items: 5, total: 40.0, status: "Preparando", date: "2024-12-03" },]
 
     //funcion para manejar el click en detalles
     const handleDetailsClick = (order) => {
+        setEditOrder(true);
         console.log("Detalles del pedido:", order);
     }
     //funcion para manejar el click en cancelar
@@ -37,7 +42,7 @@ export default function TableOrders() {
             accessorKey: "total",
             // Formatea el total a dos decimales y lo antepone con '$'
             cell: (info) => `$${Number(info.getValue()).toFixed(2)}`,
-            meta: { align: "text-right" },
+            meta: { align: "text-left" },
         },
         {
             header: "Estado",
@@ -56,12 +61,12 @@ export default function TableOrders() {
                         return <span className="text-gray-500">{status}</span>;
                 }
             },
-            meta: { align: "text-center" },
+            meta: { align: "text-left" },
         },
         {
             header: "Fecha",
             accessorKey: "date",
-            meta: { align: "text-center" },
+            meta: { align: "text-left" },
         },
         {
             header: "Acciones",
@@ -80,7 +85,7 @@ export default function TableOrders() {
                     </button>
                 </div>
             ),
-            meta: { align: "text-center" },
+            meta: { align: "text-left" },
         },
     ], [handleDetailsClick, handleCancelClick]);
 

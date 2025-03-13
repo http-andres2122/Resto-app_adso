@@ -1,6 +1,6 @@
 // src/api/pedidoService.js
-import axiosInstance from "./axiosConfig";
-import { API_ENDPOINTS } from "./endpoints";
+import axiosInstance from "../../../config/axios.config";
+import { API_ENDPOINTS } from "../../../config/endpoints";
 
 // Obtener todos los pedidos
 export const getPedidos = async () => {

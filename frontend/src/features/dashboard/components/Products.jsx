@@ -25,6 +25,7 @@ export default function Products() {
   //   );
   // }
   return (
+    // Contenedor de la página
     <div className="p-6 rounded-lg shadow-md bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200">
       {/* pagina  */}
       <div>

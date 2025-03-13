@@ -25,7 +25,7 @@ export default function editProduct({ product }) {
   // }
 
   return (
-    <div className="p-6 rounded-lg shadow-md bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200">
+    <div className="p-6 rounded-lg shadow-md bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200">
       <h2 className="text-3xl font-bold mb-6">Editar Producto </h2>
 
       {errorProducto && (

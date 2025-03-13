@@ -13,7 +13,8 @@ export default function AppRoutes() {
             {/* Rutas Públicas */}
             <Route path="/login" element={<Login />} />
             <Route path="/login-error" element={<LoginError />} />
-            <Route path="/" element={<Home />} /> {/* Ruta Home pública */}
+            <Route path="/" element={<Home />} /> {/* Ruta Home 
+            pública */}
 
             {/* Ruta Protegida: Dashboard */}
             <Route

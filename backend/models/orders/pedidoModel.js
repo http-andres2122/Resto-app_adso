@@ -26,7 +26,9 @@ const pedido = {
     );
   },
 
-  eliminarPedido: (id, callback) => {
+  eliminarPedido: (id, 
+    
+  ) => {
     connection.query("DELETE FROM pedidos WHERE id = ?", [id], callback);
   },
 };

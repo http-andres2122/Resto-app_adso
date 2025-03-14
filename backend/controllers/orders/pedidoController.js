@@ -86,6 +86,61 @@ const pedidoController = {
       res.status(200).json({ message: "Pedido eliminado exitosamente" });
     });
   },
+
+  /*
+  New methods
+  */
+
+  // Obtener ordenes
+  /**
+   *
+   * @param {Object} req
+   * @param {object} res
+   *
+   * @returns {JSON}
+   *
+   * @example
+   * //respuesta esperada
+   *
+   * "orders": [
+   *     {
+   *         "id": 1,
+   *         "table": [
+   *             {
+   *                 "id": 1,
+   *                 "number": 1,
+   *                 "capacity": 4
+   *             }
+   *         ],
+   *         "customer": [
+   *             {
+   *                 "id": 1,
+   *                 "email": "admin@example.com",
+   *                 "first_name": "Admin",
+   *                 "last_name": "User",
+   *                 "num_doc": null,
+   *                 "num_phone": null
+   *             }
+   *         ],
+   *         "shippingAddress": null,
+   *         "items": null,
+   *         "total": null,
+   *         "fecha": "2024-12-26T01:45:22.000Z",
+   *         "status": "En preparación",
+   *         "comments": "Sin cebolla en la pizza"
+   *   },
+   * ]
+   */
+  getOrdersForm: (req, res) => {
+    pedido.getOrdersForm((err, result) => {
+      if (err) {
+        return res
+          .status(500)
+          .json({ message: "Error al obtener las ordenes" });
+      }
+      res.status(200).json(result);
+    });
+  },
 };
 
 export default pedidoController;

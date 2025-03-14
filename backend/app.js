@@ -46,6 +46,7 @@ app.use(express.json()); // Middleware para parsear el body de las peticiones JS
 
 // Rutas públicas
 app.get("/api/productos", productosController.getAllProductos);
+//app.get("/api/pedidos", pedidosRoutes.getOrdersForm);
 app.get("/api/menu", menuController.obtenerMenu);
 app.get("/api/reservas", reservasController.getAllReservas);
 

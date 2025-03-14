@@ -9,6 +9,9 @@ import pedidoController from "../../controllers/orders/pedidoController.js";
 // Obtener todos los pedidos
 router.get("/", pedidoController.obtenerPedidos); //auth and role
 
+//obtener ordenes con detalles
+router.get("/orders", pedidoController.getOrdersForm);
+
 // Obtener un pedido por ID
 router.get("/:id", pedidoController.obtenerPedidoPorId);
 

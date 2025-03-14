@@ -13,15 +13,8 @@ export default function AddOrder() {
     }
 
     const onSubmit = (data) => {
-        const datos = {
-            id_type: data.id_type,
-            id_card: data.id_card,
-            customer: data.customer,
-            email: data.email,
-            precio: data.precio,
-            stock: data.stock
-        }
-        console.log("Datos 1 :", datos);
+       const order = {order: data};
+        console.log("Datos 1 :", order);
     }
 
 

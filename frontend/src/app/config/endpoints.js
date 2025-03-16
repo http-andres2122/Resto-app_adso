@@ -31,6 +31,7 @@ export const API_ENDPOINTS = {
 
   // Pedidos
   getPedidos: "/pedidos",
+  getOrders: "/pedidos/orders",
   getPedidoById: (id) => `/pedidos/${id}`,
   createPedido: "/pedidos",
   updatePedido: (id) => `/pedidos/${id}`,

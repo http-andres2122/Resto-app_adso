@@ -79,21 +79,19 @@ const pedido = {
             ]
           : [], // Si no hay table_id, devuelve un array vacío
         customer: order.customer_id
-          ? [
-              {
-                id: order.customer_id,
-                email: order.customer_email,
-                first_name: order.customer_first_name,
-                last_name: order.customer_last_name,
-                num_doc: order.customer_num_doc,
-                num_phone: order.customer_num_phone,
-              },
-            ]
-          : [], // Si no hay customer_id, devuelve un array vacío
+          ? {
+              id: order.customer_id,
+              email: order.customer_email,
+              first_name: order.customer_first_name,
+              last_name: order.customer_last_name,
+              num_doc: order.customer_num_doc,
+              num_phone: order.customer_num_phone,
+            }
+          : null, // Si no hay customer_id, devuelve null
         shippingAddress: order.shippingAddress,
         items: order.items, // Ya es JSON, no necesita transformación adicional
         total: order.total,
-        fecha: order.fecha,
+        date: order.fecha,
         status: order.status,
         comments: order.comments,
       }));

@@ -4,17 +4,30 @@ import useOrderStore from "../../store/OrderStore";
 
 export default function TableOrders() {
     //store zustand
-    const { setEditOrder, setAddOrder } = useOrderStore();
+    const { setEditOrder, setAddOrder, fetchOrders, orders, orderToDetails, setOrderToEdit, setOrderToDetails } = useOrderStore();
 
-    const orders = [
-        { id: 101, customer: "Juan Pérez", items: 3, total: 25.5, status: "Pendiente", date: "2024-12-03" },
-        { id: 102, customer: "Ana Gómez", items: 5, total: 40.0, status: "Preparando", date: "2024-12-03" },]
+    useEffect(() => {
+        fetchOrders();
+    }, []);
+
+    const ordersFormat = orders.map((order) => ({
+        ...order,
+        id: order.id,
+        customer: order.customer,
+        customerName: `${order.customer.first_name} ${order.customer.last_name}`, // Accede directamente a las propiedades del objeto
+        items: order.items.length,
+        total: order.total,
+        status: order.status,
+        date: order.date,
+    }));
 
     //funcion para manejar el click en detalles
     const handleDetailsClick = (order) => {
-        setEditOrder(true);
+        setOrderToDetails(true);
+        setOrderToEdit(order);
         console.log("Detalles del pedido:", order);
     }
+
     //funcion para manejar el click en cancelar
     const handleCancelClick = (order) => {
         console.log("Cancelar pedido:", order);
@@ -29,7 +42,7 @@ export default function TableOrders() {
         },
         {
             header: "Cliente",
-            accessorKey: "customer",
+            accessorKey: "customerName",
             meta: { align: "text-left" },
         },
         {
@@ -53,7 +66,7 @@ export default function TableOrders() {
                 switch (status) {
                     case "Pendiente":
                         return <span className="text-yellow-500 font-semibold">{status}</span>;
-                    case "Preparando":
+                    case "En preparación":
                         return <span className="text-blue-500 font-semibold">{status}</span>;
                     case "Entregado":
                         return <span className="text-green-500 font-semibold">{status}</span>;
@@ -94,7 +107,7 @@ export default function TableOrders() {
             <h1 className="text-2xl font-bold mb-4">Tabla de Pedidos</h1>
             <DynamicTable
                 columnsConfig={columnsConfig}
-                data={orders}
+                data={ordersFormat}
                 handleDetailsClick={handleDetailsClick}
                 handleCancelClick={handleCancelClick}
             />

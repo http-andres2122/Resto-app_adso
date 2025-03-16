@@ -54,3 +54,17 @@ export const deletePedido = async (id) => {
     throw new Error("Error al eliminar el pedido");
   }
 };
+
+/*
+new methods
+*/
+
+// Obtener todas las ordenes
+export const getOrders = async () => {
+  try {
+    const response = await axiosInstance.get(API_ENDPOINTS.getOrders);
+    return response.data;
+  } catch (error) {
+    throw new Error("Error al obtener ordenes");
+  }
+};

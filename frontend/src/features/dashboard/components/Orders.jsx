@@ -3,9 +3,14 @@ import TableOrders from "../../../app/components/orders/TableOrders";
 import useOrderStore from "../../../app/store/OrderStore.jsx";
 import AddOrder from "../../../app/components/orders/AddOrder";
 import OrderDetails from "../../../app/components/orders/OrderDetails";
+import EditOrder from "../../../app/components/orders/EditOrder";
 
 export default function Orders() {
-    const { addOrder, setAddOrder, editOrder } = useOrderStore();
+    const { addOrder, setAddOrder, editOrder, detailsOrder, setOrderToDetails } = useOrderStore();
+    const addProduct = () => {
+        setAddOrder(true);
+        setOrderToDetails(null)
+    }
 
 
     return (
@@ -19,7 +24,7 @@ export default function Orders() {
                 {/* Botón para agregar pedido */}
                 <div className="mb-4">
                     {/* Muestra el botón solo si editOrder es falso */}
-                    {!addOrder && !editOrder && (
+                    {!addOrder && !editOrder && !detailsOrder && (
                         <button
                             className="px-6 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-400"
                             onClick={() => setAddOrder(true)} // Muestra el formulario al hacer clic
@@ -30,7 +35,7 @@ export default function Orders() {
                 </div>
 
                 {/* Muestra la tabla de pedidos */}
-                {!addOrder && !editOrder && (
+                {!addOrder && !editOrder && !detailsOrder && (
                     <div className="overflow-x-auto">
                         <TableOrders />
                     </div>
@@ -45,9 +50,16 @@ export default function Orders() {
                 )}
 
                 {/* Muestra detalles del pedido*/}
-                {editOrder && (
+                {detailsOrder && (
                     <div className="mt-4">
                         <OrderDetails />
+                    </div>
+                )}
+
+                {/* Muestra el formulario de editar pedido */}
+                {editOrder && (
+                    <div className="mt-4">
+                        <EditOrder />
                     </div>
                 )}
             </div>

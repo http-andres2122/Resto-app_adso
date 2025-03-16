@@ -1,32 +1,18 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import useOrderStore from '../../store/OrderStore';
-const OrderDetails = () => {
-    const { setEditOrder } = useOrderStore();
 
-    const order = {
-        id: 12345,
-        date: '2024-10-28',
-        status: 'Pendiente',
-        customer: {
-            name: 'Juan Pérez',
-            email: 'juan@email.com',
-            id: '123456789',
-            phone: '1234567890',
-        },
-        shippingAddress: 'Calle Falsa 123',
-        items: [
-            { id: 1, name: 'Producto A', quantity: 2, price: 50 },
-            { id: 2, name: 'Producto B', quantity: 1, price: 30 },
-        ],
-        total: 130,
-        shippingDate: '2024-10-29',
-        trackingNumber: '1Z2X3C4V5B',
-    };
+
+export default function OrderDetails() {
+    const { setEditOrder, fetchOrders, orders, orderToDetails, setOrderToDetails } = useOrderStore();
+    console.log("order details 1:", orderToDetails);
+
+    const order = orderToDetails;
+
 
     //opcion para cerrar
     const onCancel = () => {
         console.log("Cancelar");
-        setEditOrder(false);
+        setOrderToDetails(false);
     };
 
 
@@ -40,8 +26,9 @@ const OrderDetails = () => {
             {/* Información del Cliente */}
             <div className="bg-white rounded shadow p-4 mb-4">
                 <h2 className="text-lg font-semibold mb-2">Información del Cliente</h2>
-                <p>Nombre: {order.customer.name}</p>
-                <p>Identificación: {order.customer.id}</p>
+                <p>ID Interno: {order.customer.id}</p>
+                <p>Nombre: {order.customerName}</p>
+                <p>Identificación: {order.customer.num_doc}</p>
                 <p>Teléfono: {order.customer.phone}</p>
                 <p>Email: {order.customer.email}</p>
                 <p>Dirección: {order.shippingAddress}</p>
@@ -51,27 +38,31 @@ const OrderDetails = () => {
             <div className="bg-white rounded shadow p-4 mb-4">
                 <h2 className="text-lg font-semibold mb-2">Productos</h2>
                 <ul className="list-disc list-inside">
-                    {order.items.map((item) => (
-                        <li key={item.id}>
-                            {item.name} (Cantidad: {item.quantity}) - ${item.price * item.quantity}
-                        </li>
-                    ))}
+                    {order.items.length > 0 ? (
+                        order.items.map((item) => (
+                            <li key={item.id}>
+                                {item.name} (Cantidad: {item.quantity}) - ${item.price * item.quantity}
+                            </li>
+                        ))
+                    ) : (
+                        <li>No hay productos en este pedido.</li>
+                    )}
                 </ul>
                 <p className="mt-2">Total: ${order.total}</p>
             </div>
 
             {/* Historial del Pedido */}
-            <div className="bg-white rounded shadow p-4 mb-4">
+            {/* <div className="bg-white rounded shadow p-4 mb-4">
                 <h2 className="text-lg font-semibold mb-2">Historial</h2>
                 <p>Enviado el: {order.shippingDate} | Tracking: {order.trackingNumber}</p>
-            </div>
+            </div> */}
 
             {/* Opciones y Acciones */}
             <div className="flex space-x-2">
 
                 <button
                     className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                    onClick={() => setIsEditing(true)}
+                    onClick={() => setEditOrder(true)}
                 >
                     Editar Pedido
                 </button>
@@ -95,4 +86,3 @@ const OrderDetails = () => {
     );
 };
 
-export default OrderDetails;

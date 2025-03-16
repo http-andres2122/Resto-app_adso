@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import useProductStore from '../../store/ProductStore';
 
-const OrderForm = ({ initialData = {}, onSubmit, onCancel }) => {
-  const { products, fetchProducts } = useProductStore();
+const FormOrder = ({ onSubmit, onCancel }) => {
+  const { products, fetchProducts, orderToDetails, setEditOrder, addOrder, detailsOrder } = useProductStore();
+  console.log("order details 2:", orderToDetails);
 
   useEffect(() => {
     fetchProducts();
@@ -23,14 +24,30 @@ const OrderForm = ({ initialData = {}, onSubmit, onCancel }) => {
   const categories = ['Todas', ...new Set(availableProducts.map((p) => p.category))];
 
   const [formData, setFormData] = useState({
-    shippingAddress: initialData.shippingAddress || '',
-    customer: initialData.customer || { name: '', email: '' },
-    status: initialData.status || 'Pendiente',
-    items: initialData.items || [],
-    comments: initialData.comments || '',
-    total: initialData.total || 0,
+    shippingAddress: '',
+    customer: { name: '', email: '' },
+    status: 'Pendiente',
+    items: [],
+    comments: '',
+    total: 0,
   });
+
   const [selectedCategory, setSelectedCategory] = useState('Todas');
+
+  useEffect(() => {
+    if (addOrder) {
+      setFormData({
+        shippingAddress: '',
+        customer: { name: '', email: '' },
+        status: 'Pendiente',
+        items: [],
+        comments: '',
+        total: 0,
+      });
+    } else if (detailsOrder && orderToDetails) {
+      setFormData(orderToDetails);
+    }
+  }, [addOrder, detailsOrder, orderToDetails]);
 
   // Filtrar productos disponibles, excluyendo los ya seleccionados
   const filteredProducts = availableProducts
@@ -242,4 +259,4 @@ const OrderForm = ({ initialData = {}, onSubmit, onCancel }) => {
   );
 };
 
-export default OrderForm;
+export default FormOrder;

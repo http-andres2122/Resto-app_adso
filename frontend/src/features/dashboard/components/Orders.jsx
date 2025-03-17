@@ -7,10 +7,6 @@ import EditOrder from "../../../app/components/orders/EditOrder";
 
 export default function Orders() {
     const { addOrder, setAddOrder, editOrder, detailsOrder, setOrderToDetails } = useOrderStore();
-    const addProduct = () => {
-        setAddOrder(true);
-        setOrderToDetails(null)
-    }
 
 
     return (
@@ -43,7 +39,7 @@ export default function Orders() {
 
 
                 {/* Muestra el formulario de agregar pedido */}
-                {addOrder && !editOrder && (
+                {addOrder && (
                     <div className="mt-4">
                         <AddOrder />
                     </div>

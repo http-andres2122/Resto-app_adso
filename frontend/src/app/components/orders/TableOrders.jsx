@@ -4,7 +4,7 @@ import useOrderStore from "../../store/OrderStore";
 
 export default function TableOrders() {
     //store zustand
-    const { setEditOrder, setAddOrder, fetchOrders, orders, orderToDetails, setOrderToEdit, setOrderToDetails } = useOrderStore();
+    const { fetchOrders, orders, setOrderToEdit, setDetailsOrder } = useOrderStore();
 
     useEffect(() => {
         fetchOrders();
@@ -14,7 +14,6 @@ export default function TableOrders() {
         ...order,
         id: order.id,
         customer: order.customer,
-        customerName: `${order.customer.first_name} ${order.customer.last_name}`, // Accede directamente a las propiedades del objeto
         items: order.items.length,
         total: order.total,
         status: order.status,
@@ -23,8 +22,8 @@ export default function TableOrders() {
 
     //funcion para manejar el click en detalles
     const handleDetailsClick = (order) => {
-        setOrderToDetails(true);
         setOrderToEdit(order);
+        setDetailsOrder(true);
         console.log("Detalles del pedido:", order);
     }
 
@@ -42,7 +41,7 @@ export default function TableOrders() {
         },
         {
             header: "Cliente",
-            accessorKey: "customerName",
+            accessorKey: "customer.full_name",
             meta: { align: "text-left" },
         },
         {

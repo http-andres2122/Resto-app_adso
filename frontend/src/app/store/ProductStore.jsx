@@ -17,8 +17,8 @@ const useProductStore = create((set, get) => ({
   },
 
   //opcion de mostrar el formulario de editar producto
-  setShowEditProduct: (vale) => {
-    set({ showEditProduct: vale });
+  setShowEditProduct: (value) => {
+    set({ showEditProduct: value });
   },
 
   //opcion de editar producto

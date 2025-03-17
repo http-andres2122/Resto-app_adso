@@ -6,6 +6,7 @@ export default function Header() {
   const [isDarkMode, toggleDarkMode] = useDarkMode();
   const [menuOpen, setMenuOpen] = useState(false);
   const { user, logout } = useContext(AuthContext); // Obtiene user y logout del contexto
+  console.log('user', user)
 
   const handleLogout = () => {
     logout(); // Llama a la función de logout del contexto
@@ -47,7 +48,7 @@ export default function Header() {
           {/* Opciones de Escritorio */}
           <div className="hidden sm:flex items-center space-x-4">
             <span className="text-gray-600 dark:text-gray-300">
-              Hola, {user && user.first_name ? user.first_name : "Administrador"}
+              Hola, {user && user.full_name ? user.full_name : "Administrador"}
             </span>
             <button
               onClick={toggleDarkMode}
@@ -70,7 +71,7 @@ export default function Header() {
           <ul className="space-y-2">
             <li>
               <span className="block px-4 py-2 text-gray-800 dark:text-gray-200">
-                Hola, {user && user.first_name ? user.first_name : "Administrador"}
+                Hola, {user && user.full_name ? user.full_name : "Administrador"}
               </span>
             </li>
             <li>

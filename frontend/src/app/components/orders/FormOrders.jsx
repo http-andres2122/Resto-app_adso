@@ -1,53 +1,56 @@
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import useProductStore from '../../store/ProductStore';
+import useOrderStore from '../../store/OrderStore';
 
 const FormOrder = ({ onSubmit, onCancel }) => {
-  const { products, fetchProducts, orderToDetails, setEditOrder, addOrder, detailsOrder } = useProductStore();
-  console.log("order details 2:", orderToDetails);
+  const { products, fetchProducts } = useProductStore();
+  const { orderToEdit, editOrder } = useOrderStore();
+  //console.log("form order module:", orderToEdit);
 
   useEffect(() => {
     fetchProducts();
   }, []);
 
-  const abp = products.map((product) => ({
-    id: product.id,
-    name: product.nombre,
-    price: product.precio,
-    category: product.categoria_nombre,
-  }
-  ));
+  useEffect(() => {
+    if (editOrder && orderToEdit) {
+      console.log("Pedido a editar:", orderToEdit);
+      const order = {
+        ...orderToEdit,
+        items: orderToEdit.items === 0 ? [] : orderToEdit.items,
+      };
+      setFormData(order);
+      console.log(order);
+    }
+  }, [editOrder]);
 
-  // Lista simulada de productos con categorías
-  const availableProducts = abp;
-
-  const categories = ['Todas', ...new Set(availableProducts.map((p) => p.category))];
 
   const [formData, setFormData] = useState({
     shippingAddress: '',
-    customer: { name: '', email: '' },
+    customer: { full_name: '', email: '' },
     status: 'Pendiente',
     items: [],
     comments: '',
     total: 0,
   });
 
+  console.log("data user form", formData)
+
   const [selectedCategory, setSelectedCategory] = useState('Todas');
 
-  useEffect(() => {
-    if (addOrder) {
-      setFormData({
-        shippingAddress: '',
-        customer: { name: '', email: '' },
-        status: 'Pendiente',
-        items: [],
-        comments: '',
-        total: 0,
-      });
-    } else if (detailsOrder && orderToDetails) {
-      setFormData(orderToDetails);
-    }
-  }, [addOrder, detailsOrder, orderToDetails]);
+
+
+  const abp = products.map((product) => ({
+    id: product.id,
+    name: product.nombre,
+    price: product.precio,
+    category: product.categoria_nombre,
+  }));
+
+  // Lista simulada de productos con categorías
+  const availableProducts = abp;
+
+  const categories = ['Todas', ...new Set(availableProducts.map((p) => p.category))];
 
   // Filtrar productos disponibles, excluyendo los ya seleccionados
   const filteredProducts = availableProducts
@@ -117,12 +120,23 @@ const FormOrder = ({ onSubmit, onCancel }) => {
         <label>Nombre del Cliente</label>
         <input
           type="text"
-          name="name"
-          value={formData.customer.name}
+          name="full_name"
+          value={formData.customer.full_name}
           onChange={handleCustomerChange}
           className="w-full p-2 border rounded"
         />
       </div>
+      <div>
+        <label>Identificacion</label>
+        <input
+          type="text"
+          name="num_doc"
+          value={formData.customer.num_doc}
+          onChange={handleCustomerChange}
+          className="w-full p-2 border rounded"
+        />
+      </div>
+
       <div>
         <label>Email del Cliente</label>
         <input

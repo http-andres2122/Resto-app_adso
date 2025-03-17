@@ -3,17 +3,23 @@ import useOrderStore from '../../store/OrderStore';
 
 
 export default function OrderDetails() {
-    const { setEditOrder, fetchOrders, orders, orderToDetails, setOrderToDetails } = useOrderStore();
-    console.log("order details 1:", orderToDetails);
+    const { setEditOrder, fetchOrders, orders, orderToEdit, setDetailsOrder, setOrderToEdit } = useOrderStore();
+    console.log("order details module:", orderToEdit);
 
-    const order = orderToDetails;
+    const order = orderToEdit;
 
 
     //opcion para cerrar
     const onCancel = () => {
         console.log("Cancelar");
-        setOrderToDetails(false);
+        setDetailsOrder(false);
     };
+
+    //editar pedido
+    const onEdit = () => {
+        setEditOrder(true);
+        //setOrderToEdit(order);
+    }
 
 
 
@@ -27,7 +33,7 @@ export default function OrderDetails() {
             <div className="bg-white rounded shadow p-4 mb-4">
                 <h2 className="text-lg font-semibold mb-2">Información del Cliente</h2>
                 <p>ID Interno: {order.customer.id}</p>
-                <p>Nombre: {order.customerName}</p>
+                <p>Nombre: {order.customer.full_name}</p>
                 <p>Identificación: {order.customer.num_doc}</p>
                 <p>Teléfono: {order.customer.phone}</p>
                 <p>Email: {order.customer.email}</p>
@@ -62,9 +68,9 @@ export default function OrderDetails() {
 
                 <button
                     className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                    onClick={() => setEditOrder(true)}
+                    onClick={onEdit}
                 >
-                    Editar Pedido
+                    Editar orden
                 </button>
 
                 <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">

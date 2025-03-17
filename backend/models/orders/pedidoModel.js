@@ -44,8 +44,7 @@ const pedido = {
       m.capacidad AS table_capacity,
       p.customer_id,
       u.email AS customer_email,
-      u.first_name AS customer_first_name,
-      u.last_name AS customer_last_name,
+      u.full_name AS customer_full_name,
       u.num_doc AS customer_num_doc,
       u.num_phone AS customer_num_phone,
       p.shippingAddress,
@@ -82,8 +81,7 @@ const pedido = {
           ? {
               id: order.customer_id,
               email: order.customer_email,
-              first_name: order.customer_first_name,
-              last_name: order.customer_last_name,
+              full_name: order.customer_full_name,
               num_doc: order.customer_num_doc,
               num_phone: order.customer_num_phone,
             }

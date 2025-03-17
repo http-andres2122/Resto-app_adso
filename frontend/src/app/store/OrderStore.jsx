@@ -5,7 +5,7 @@ const useOrderStore = create((set, get) => ({
     // Estado para almacenar los pedidos
     orders: [],
     //estado para almacenar la order a editar
-    orderToDetails: null,
+    orderToEdit: [],
     //estado inicial para mostrar el formulario de agregar pedido
     addOrder: false,
     //estado inicial para mostrar el formulario de editar pedido
@@ -17,22 +17,22 @@ const useOrderStore = create((set, get) => ({
 
     //opcion de mostrar el formulario de agregar pedido
     setAddOrder: (value) => {
-        set({ addOrder: value });
-        console.log("agregar pedido:", value);
+        set({ addOrder: value, editOrder: false, detailsOrder: false, orderToEdit: [] });
+        console.log(" set agregar pedido:", value);
     },
     //opcion de mostrar el formulario de editar pedido
     setEditOrder: (value) => {
-        set({ editOrder: value });
-        console.log("editar pedido:", value);
+        set({ editOrder: value, addOrder: false, detailsOrder: !value });
+        console.log("set editar pedido:", value);
     },
-    //opcion para setear la order a editar
+    //opcion para setear orderToEdit segun la orden
     setOrderToEdit: (order) => {
-        set({ orderToDetails: order });
+        set({ orderToEdit: order });
         console.log("array order details:", order);
     },
-    //opcion para setear la order a detalles
-    setOrderToDetails: (value) => {
-        set({ detailsOrder: value });
+    //opcion para setear detailsOrder segun el valor y mostrar el formulario de detalles
+    setDetailsOrder: (value) => {
+        set({ detailsOrder: value, addOrder: false, editOrder: false });
         console.log("order details:", value);
     },
 
@@ -58,6 +58,7 @@ const useOrderStore = create((set, get) => ({
             console.error("Error al cargar los pedidos:", error);
         }
     },
+    
 
 }));
 

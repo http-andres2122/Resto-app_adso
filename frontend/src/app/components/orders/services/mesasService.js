@@ -1,11 +1,12 @@
 // src/api/mesaService.js
-import axiosInstance from "./axiosConfig";
-import { API_ENDPOINTS } from "./endpoints";
+import axiosInstance from "../../../config/axios.config";
+import { API_ENDPOINTS } from "../../../config/endpoints";
 
 // Obtener todas las mesas
 export const getMesas = async () => {
   try {
     const response = await axiosInstance.get(API_ENDPOINTS.getMesas);
+    console.log("Mesas cargadas service:", response.data);
     return response.data;
   } catch (error) {
     throw new Error("Error al obtener mesas");

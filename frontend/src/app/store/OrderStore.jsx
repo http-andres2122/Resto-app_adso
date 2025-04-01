@@ -13,8 +13,6 @@ const useOrderStore = create((set, get) => ({
     //estado para los detalles del formulario
     detailsOrder: false,
 
-
-
     //opcion de mostrar el formulario de agregar pedido
     setAddOrder: (value) => {
         set({ addOrder: value, editOrder: false, detailsOrder: false, orderToEdit: [] });
@@ -59,7 +57,6 @@ const useOrderStore = create((set, get) => ({
         }
     },
     
-
 }));
 
 export default useOrderStore;

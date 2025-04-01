@@ -4,7 +4,7 @@ const router = express.Router();
 import mesasController from "../../controllers/orders/mesasController.js";
 
 // Obtener todas las mesas
-router.get("/", mesasController.obtenerMesas);
+router.get("/", mesasController.getAllTables);
 
 // Obtener una mesa por ID
 router.get("/:id", mesasController.obtenerMesaPorId);

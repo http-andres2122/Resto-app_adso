@@ -21,7 +21,31 @@ export default function OrderDetails() {
         //setOrderToEdit(order);
     }
 
+    // Función para determinar el tipo de servicio
+    const determinarTipoServicio = () => {
+        if (!order.table || !Array.isArray(order.table) || order.table.length === 0) {
+            return 'No asignada';
+        }
 
+        // Buscar una mesa con número 0 e id 1 (que indica domicilio)
+        const domicilio = order.table.find(mesa => mesa.number === 0 && mesa.id === 1);
+        if (domicilio) {
+            return 'Domicilio';
+        }
+
+        // Buscar mesas normales (con número mayor a 0)
+        const mesas = order.table.filter(mesa => mesa.number > 0);
+        if (mesas.length > 0) {
+            if (mesas.length === 1) {
+                return `Mesa ${mesas[0].number}`;
+            } else {
+                // Si hay múltiples mesas, mostrarlas todas
+                return `Mesas: ${mesas.map(mesa => mesa.number).join(', ')}`;
+            }
+        }
+
+        return 'No asignada';
+    };
 
     return (
         <div className="container mx-auto p-4">
@@ -33,12 +57,20 @@ export default function OrderDetails() {
             <div className="bg-white rounded shadow p-4 mb-4">
                 <h2 className="text-lg font-semibold mb-2">Información del Cliente</h2>
                 <p>ID Interno: {order.customer.id}</p>
-                <p>Nombre: {order.customer.full_name}</p>
+                <p>Nombre: {order.customer.username}</p>
                 <p>Identificación: {order.customer.num_doc}</p>
                 <p>Teléfono: {order.customer.phone}</p>
                 <p>Email: {order.customer.email}</p>
                 <p>Dirección: {order.shippingAddress}</p>
             </div>
+
+            {/* Información del Servicio */}
+            <div className="bg-white rounded shadow p-4 mb-4">
+                <h2 className="text-lg font-semibold mb-2">Información del Servicio</h2>
+                <p>Tipo: {determinarTipoServicio()}</p>
+                <p>Observaciones: {order.comments || 'Sin observaciones'}</p>
+            </div>
+
 
             {/* Detalles del Producto/Servicio */}
             <div className="bg-white rounded shadow p-4 mb-4">

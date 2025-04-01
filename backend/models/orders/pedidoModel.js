@@ -44,7 +44,7 @@ const pedido = {
       m.capacidad AS table_capacity,
       p.customer_id,
       u.email AS customer_email,
-      u.full_name AS customer_full_name,
+      u.full_name AS customer_username,
       u.num_doc AS customer_num_doc,
       u.num_phone AS customer_num_phone,
       p.shippingAddress,
@@ -81,7 +81,7 @@ const pedido = {
           ? {
               id: order.customer_id,
               email: order.customer_email,
-              full_name: order.customer_full_name,
+              username: order.customer_username,
               num_doc: order.customer_num_doc,
               num_phone: order.customer_num_phone,
             }
@@ -99,6 +99,51 @@ const pedido = {
       return callback(null, response);
     });
   },
+
+  // Crear una orden
+  createOrder: (orderData, callback) => {
+    const { num_doc, username, num_phone, isDelivery, shippingAddress, items, total, comments } = orderData;
+  
+    // Paso 1: Cotejar o crear usuario
+    connection.query('SELECT id FROM usuarios WHERE num_doc = ?', [num_doc], (err, result) => {
+      if (err) return callback(err);
+  
+      let customer_id;
+      if (result.length > 0) {
+        customer_id = result[0].id; // Usuario existente
+      } else {
+        // Crear usuario pre-registrado
+        connection.query(
+          'INSERT INTO usuarios (num_doc, username, num_phone, is_fully_registered, role_id) VALUES (?, ?, ?, 0, 2)',
+          [num_doc, username || `guest_${num_doc}`, num_phone], // Si no hay username, usa un valor temporal
+          (err, result) => {
+            if (err) return callback(err);
+            customer_id = result.insertId;
+            createOrderWithCustomer(customer_id);
+          }
+        );
+        return;
+      }
+      createOrderWithCustomer(customer_id);
+    });
+  
+    function createOrderWithCustomer(customer_id) {
+      const table_id = isDelivery ? 1 : orderData.table_id; // 999 para "Domicilio"
+      const sql = `
+        INSERT INTO pedidos (table_id, customer_id, shippingAddress, items, total, status, comments)
+        VALUES (?, ?, ?, ?, ?, 'pendiente', ?)
+      `;
+      connection.query(sql, [table_id, customer_id, shippingAddress, JSON.stringify(items), total, comments], (err, result) => {
+        if (err) return callback(err);
+        callback(null, { order_id: result.insertId });
+      });
+    }
+  },
+
+  
+
 };
+
+
 
 export default pedido;

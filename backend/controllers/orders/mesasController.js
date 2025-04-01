@@ -72,6 +72,20 @@ const mesasController = {
       res.status(200).json({ message: "Mesa eliminada exitosamente" });
     });
   },
+
+  /* 
+  New methods and fuctions for products 
+  */
+
+  getAllTables: (req, res) => {
+    mesas.getTables((err, result) => {
+      if (err) {
+        return res.status(500).json({ error: 'Error al obtener las mesas' });
+      }
+      return res.status(200).json(result);
+    });
+  },
+
 };
 
 export default mesasController;

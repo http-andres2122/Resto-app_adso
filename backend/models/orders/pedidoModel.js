@@ -42,7 +42,7 @@ const pedido = {
       p.table_num,
       p.customer_id,
       u.email AS customer_email,
-      u.full_name AS customer_username,
+      u.full_name AS customer_full_name,
       u.num_doc AS customer_num_doc,
       u.num_phone AS customer_num_phone,
       p.shippingAddress,
@@ -75,7 +75,7 @@ const pedido = {
           ? {
               id: order.customer_id,
               email: order.customer_email,
-              username: order.customer_username,
+              full_name: order.customer_full_name,
               num_doc: order.customer_num_doc,
               num_phone: order.customer_num_phone,
             }
@@ -92,13 +92,15 @@ const pedido = {
   createOrder: (orderData, callback) => {
     const {
       num_doc,
-      username,
+      full_name,
+      email,
       num_phone,
-      isDelivery,
+      table_num,
       shippingAddress,
       items,
       total,
       comments,
+      status = "pendiente", // Valor por defecto si no se proporciona
     } = orderData;
 
     // Paso 1: Cotejar o crear usuario
@@ -114,8 +116,13 @@ const pedido = {
         } else {
           // Crear usuario pre-registrado
           connection.query(
-            "INSERT INTO usuarios (num_doc, username, num_phone, is_fully_registered, role_id) VALUES (?, ?, ?, 0, 2)",
-            [num_doc, username || `guest_${num_doc}`, num_phone], // Si no hay username, usa un valor temporal
+            "INSERT INTO usuarios (num_doc, full_name, email, num_phone, is_fully_registered, role_id) VALUES (?, ?, ?, ?, 0, 2)",
+            [
+              num_doc,
+              full_name || `guest_${num_doc}`,
+              email || null,
+              num_phone || null,
+            ], // Si no hay full_name, usa un valor temporal
             (err, result) => {
               if (err) return callback(err);
               customer_id = result.insertId;
@@ -129,19 +136,19 @@ const pedido = {
     );
 
     function createOrderWithCustomer(customer_id) {
-      const table_id = isDelivery ? 1 : orderData.table_id; // 999 para "Domicilio"
       const sql = `
-        INSERT INTO pedidos (table_id, customer_id, shippingAddress, items, total, status, comments)
-        VALUES (?, ?, ?, ?, ?, 'pendiente', ?)
+        INSERT INTO pedidos (table_num, customer_id, shippingAddress, items, total, status, comments)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
       `;
       connection.query(
         sql,
         [
-          table_id,
+          table_num,
           customer_id,
           shippingAddress,
           JSON.stringify(items),
           total,
+          status,
           comments,
         ],
         (err, result) => {

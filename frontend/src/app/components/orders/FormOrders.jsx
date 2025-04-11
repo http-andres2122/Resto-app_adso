@@ -4,6 +4,14 @@ import useProductStore from '../../store/ProductStore';
 import useOrderStore from '../../store/OrderStore';
 import useTableStore from '../../store/TableStore';
 
+// Definiendo un objeto con los estados posibles para mayor escalabilidad
+const ORDER_STATES = {
+  PREPARATION: { value: 'En preparación', label: 'En Preparación' },
+  PENDING: { value: 'Pendiente', label: 'Pendiente' },
+  SERVED: { value: 'Servido', label: 'Servido' },
+  CANCELLED: { value: 'Cancelado', label: 'Cancelado' }
+};
+
 const FormOrder = ({ onSubmit, onCancel }) => {
   const { products, fetchProducts } = useProductStore();
   const { orderToEdit, editOrder } = useOrderStore();
@@ -11,7 +19,7 @@ const FormOrder = ({ onSubmit, onCancel }) => {
   const [formData, setFormData] = useState({
     shippingAddress: '',
     customer: {
-      username: '',
+      full_name: '',
       email: '',
       num_doc: ''
     },
@@ -105,9 +113,9 @@ const FormOrder = ({ onSubmit, onCancel }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
+
     // Si estamos actualizando la mesa, manejar caso especial
-    if (name === 'table') {
+    if (name === 'table_num') {
       // Si está vacío, mantener string vacío
       if (value === '') {
         setFormData((prev) => ({ ...prev, [name]: value }));
@@ -151,21 +159,21 @@ const FormOrder = ({ onSubmit, onCancel }) => {
         <label>Nombre del Cliente</label>
         <input
           type="text"
-          name="username"
-          value={formData.customer.username}
+          name="full_name"
+          value={formData.customer.full_name}
           onChange={handleCustomerChange}
-          readOnly={editOrder} 
+          readOnly={editOrder}
           className="w-full p-2 border rounded"
         />
       </div>
       <div>
         <label>Identificacion</label>
         <input
-          type="text"
+          type="number"
           name="num_doc"
           value={formData.customer.num_doc}
           onChange={handleCustomerChange}
-          readOnly={editOrder} 
+          readOnly={editOrder}
           className="w-full p-2 border rounded"
         />
       </div>
@@ -177,7 +185,7 @@ const FormOrder = ({ onSubmit, onCancel }) => {
           name="email"
           value={formData.customer.email}
           onChange={handleCustomerChange}
-          readOnly={editOrder} 
+          readOnly={editOrder}
           className="w-full p-2 border rounded"
         />
       </div>
@@ -211,9 +219,11 @@ const FormOrder = ({ onSubmit, onCancel }) => {
           onChange={handleChange}
           className="w-full p-2 border rounded"
         >
-          <option value="Pendiente">Pendiente</option>
-          <option value="Enviado">Enviado</option>
-          <option value="Cancelado">Cancelado</option>
+          {Object.values(ORDER_STATES).map((state) => (
+            <option key={state.value} value={state.value}>
+              {state.label}
+            </option>
+          ))}
         </select>
       </div>
 

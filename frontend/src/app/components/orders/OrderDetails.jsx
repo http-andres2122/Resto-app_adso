@@ -56,10 +56,10 @@ export default function OrderDetails() {
             {/* Información del Cliente */}
             <div className="bg-white rounded shadow p-4 mb-4">
                 <h2 className="text-lg font-semibold mb-2">Información del Cliente</h2>
-                <p>ID Interno: {order.customer.id}</p>
+                <p>ID Interno cliente: {order.customer.id}</p>
                 <p>Nombre: {order.customer.username}</p>
                 <p>Identificación: {order.customer.num_doc}</p>
-                <p>Teléfono: {order.customer.phone}</p>
+                <p>Teléfono: {order.customer.num_phone}</p>
                 <p>Email: {order.customer.email}</p>
                 <p>Dirección: {order.shippingAddress}</p>
             </div>
@@ -67,7 +67,7 @@ export default function OrderDetails() {
             {/* Información del Servicio */}
             <div className="bg-white rounded shadow p-4 mb-4">
                 <h2 className="text-lg font-semibold mb-2">Información del Servicio</h2>
-                <p>Tipo: {determinarTipoServicio()}</p>
+                <p>Mesa: {order.table_num || 'No asignada'}</p>
                 <p>Observaciones: {order.comments || 'Sin observaciones'}</p>
             </div>
 

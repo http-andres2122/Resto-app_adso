@@ -41,7 +41,7 @@ export default function TableOrders() {
         },
         {
             header: "Cliente",
-            accessorKey: "customer.username",
+            accessorKey: "customer.full_name",
             meta: { align: "text-left" },
         },
         {

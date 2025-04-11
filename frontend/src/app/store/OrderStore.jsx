@@ -57,6 +57,17 @@ const useOrderStore = create((set, get) => ({
         }
     },
 
+    //create order
+    createOrder: async (data) => {
+        try {
+            const response = await orderService.createPedido(data);
+            console.log("Pedido creado:", response);
+            set({ addOrder: false });
+        } catch (error) {
+            console.error("Error al crear el pedido:", error);
+        }
+    },
+
     //update order
     updateOrder: async (id, data) => {
         try {

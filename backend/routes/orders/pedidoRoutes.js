@@ -16,7 +16,7 @@ router.get("/orders", pedidoController.getOrdersForm);
 router.get("/:id", pedidoController.obtenerPedidoPorId);
 
 // Crear un nuevo pedido
-router.post("/", pedidoController.crearPedido); //auth rute
+router.post("/", pedidoController.createOrder); //auth rute
 
 // Actualizar un pedido existente
 router.put("/:id", pedidoController.updateOrder);

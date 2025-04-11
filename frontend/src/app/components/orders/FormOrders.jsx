@@ -7,28 +7,20 @@ import useTableStore from '../../store/TableStore';
 const FormOrder = ({ onSubmit, onCancel }) => {
   const { products, fetchProducts } = useProductStore();
   const { orderToEdit, editOrder } = useOrderStore();
-  const {
-    tables,
-    loading: loadingTables,
-    error: tableError,
-    fetchTables,
-    getAvailableTables,
-    addDomicilioTable,
-    selectTable,
-    selectedTable,
-    clearSelectedTable
-  } = useTableStore();
 
-  const [tableNumber, setTableNumber] = useState('');
-
-  useEffect(() => {
-    fetchProducts();
-    fetchTables();
-    return () => {
-      // Limpiar la selección cuando se desmonte el componente
-      clearSelectedTable();
-    };
-  }, []);
+  const [formData, setFormData] = useState({
+    shippingAddress: '',
+    customer: {
+      username: '',
+      email: '',
+      num_doc: ''
+    },
+    status: 'Pendiente',
+    items: [],
+    comments: '',
+    total: 0,
+    table_num: '',
+  });
 
   useEffect(() => {
     if (editOrder && orderToEdit) {
@@ -36,46 +28,35 @@ const FormOrder = ({ onSubmit, onCancel }) => {
       const order = {
         ...orderToEdit,
         items: orderToEdit.items === 0 ? [] : orderToEdit.items,
+
       };
       setFormData(order);
-      console.log(order);
+      //console.log("use effect form orders", order);
     }
   }, [editOrder]);
 
-  // Actualizar formData cuando se selecciona una mesa
   useEffect(() => {
-    if (selectedTable) {
-      setFormData(prev => ({
-        ...prev,
-        table: selectedTable.id // O selectedTable.name, según lo que necesites guardar
-      }));
-    }
-  }, [selectedTable]);
-
-  const [formData, setFormData] = useState({
-    shippingAddress: '',
-    customer: { username: '', email: '' },
-    status: 'Pendiente',
-    items: [],
-    comments: '',
-    total: 0,
-    table: '',
-  });
+    fetchProducts();
+    //fetchTables();
+    return () => {
+      // Limpiar la selección cuando se desmonte el componente
+      //clearSelectedTable();
+      null
+    };
+  }, []);
 
   console.log("data user form", formData);
 
   // Resto del código para productos, categorías, etc.
   const [selectedCategory, setSelectedCategory] = useState('Todas');
 
-  const abp = products.map((product) => ({
+  // Lista simulada de productos con categorías
+  const availableProducts = products.map((product) => ({
     id: product.id,
     name: product.nombre,
     price: product.precio,
     category: product.categoria_nombre,
   }));
-
-  // Lista simulada de productos con categorías
-  const availableProducts = abp;
 
   const categories = ['Todas', ...new Set(availableProducts.map((p) => p.category))];
 
@@ -124,15 +105,37 @@ const FormOrder = ({ onSubmit, onCancel }) => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    
+    // Si estamos actualizando la mesa, manejar caso especial
+    if (name === 'table') {
+      // Si está vacío, mantener string vacío
+      if (value === '') {
+        setFormData((prev) => ({ ...prev, [name]: value }));
+      } else {
+        // Intentar convertir a número
+        const tableNumber = Number(value);
+        if (!isNaN(tableNumber)) {
+          setFormData((prev) => ({ ...prev, [name]: tableNumber }));
+        } else {
+          // Si no es un número válido, mantener el valor anterior
+          console.warn("Valor de mesa inválido:", value);
+        }
+      }
+    } else {
+      // Para otros campos, comportamiento normal
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleCustomerChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      customer: { ...prev.customer, [name]: value },
-    }));
+    // Solo permitir cambios si no estamos en modo edición
+    if (!editOrder) {
+      const { name, value } = e.target;
+      setFormData((prev) => ({
+        ...prev,
+        customer: { ...prev.customer, [name]: value },
+      }));
+    }
   };
 
   const handleSubmit = (e) => {
@@ -140,63 +143,6 @@ const FormOrder = ({ onSubmit, onCancel }) => {
     onSubmit(formData);
   };
 
-  // Obtén las mesas disponibles del store
-  const availableTables = getAvailableTables();
-
-  // Función para manejar la búsqueda de mesa por número
-  const handleTableSearch = (e) => {
-    const value = e.target.value;
-    setTableNumber(value);
-
-    // Si el campo está vacío, limpia la selección
-    if (!value.trim()) {
-      clearSelectedTable();
-      return;
-    }
-
-    // Buscar la mesa por número
-    const numValue = parseInt(value);
-    if (isNaN(numValue)) return;
-
-    // Si es 0, seleccionar domicilio
-    if (numValue === 0) {
-      const domicilioTable = addDomicilioTable();
-      // Actualizar directamente el formData ya que domicilio siempre está disponible
-      setFormData(prev => ({
-        ...prev,
-        table: domicilioTable.id
-      }));
-      return;
-    }
-
-    // Buscar mesa por número en el array de mesas
-    const foundTable = tables.find(table =>
-      table.number === numValue || table.id === numValue
-    );
-
-    if (foundTable) {
-      // Solo seleccionar si está disponible
-      if (foundTable.status === 'disponible') {
-        selectTable(foundTable.id);
-      } else {
-        // Si no está disponible, no seleccionar pero mostrar su estado
-        clearSelectedTable();
-        // Podrías mantener una referencia a la mesa no disponible para mostrar el mensaje
-      }
-    } else {
-      clearSelectedTable();
-    }
-  };
-
-  // Función específica para seleccionar domicilio
-  const handleSelectDomicilio = () => {
-    const domicilioTable = addDomicilioTable();
-    setTableNumber('0');
-    setFormData(prev => ({
-      ...prev,
-      table: domicilioTable.id
-    }));
-  };
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
@@ -208,6 +154,7 @@ const FormOrder = ({ onSubmit, onCancel }) => {
           name="username"
           value={formData.customer.username}
           onChange={handleCustomerChange}
+          readOnly={editOrder} 
           className="w-full p-2 border rounded"
         />
       </div>
@@ -218,6 +165,7 @@ const FormOrder = ({ onSubmit, onCancel }) => {
           name="num_doc"
           value={formData.customer.num_doc}
           onChange={handleCustomerChange}
+          readOnly={editOrder} 
           className="w-full p-2 border rounded"
         />
       </div>
@@ -229,6 +177,7 @@ const FormOrder = ({ onSubmit, onCancel }) => {
           name="email"
           value={formData.customer.email}
           onChange={handleCustomerChange}
+          readOnly={editOrder} 
           className="w-full p-2 border rounded"
         />
       </div>
@@ -273,47 +222,22 @@ const FormOrder = ({ onSubmit, onCancel }) => {
         <label>Mesa</label>
         <div className="flex space-x-2">
           <input
+            name='table_num'
             type="number"
-            value={tableNumber}
-            onChange={handleTableSearch}
+            value={formData.table_num}
+            onChange={handleChange}
             placeholder="Número de mesa"
             className="w-full p-2 border rounded"
           />
           <button
             type="button"
-            onClick={handleSelectDomicilio}
+            onClick={() => setFormData({ ...formData, table_num: 'Domicilio' })}
             className="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded"
           >
             Domicilio
           </button>
         </div>
 
-        {loadingTables && <p className="text-gray-500 mt-1">Cargando mesas...</p>}
-        {tableError && <p className="text-red-500 mt-1">{tableError}</p>}
-
-        {/* Mostrar información de la mesa seleccionada o buscada */}
-        {tableNumber && (
-          <div className="mt-2">
-            {selectedTable ? (
-              <div className="p-2 bg-green-100 text-green-800 rounded">
-                <p><strong>Mesa:</strong> {selectedTable.name}</p>
-                <p><strong>Estado:</strong> {selectedTable.status}</p>
-                <p className="font-semibold">✓ Mesa disponible y seleccionada</p>
-              </div>
-            ) : (
-              <div className="p-2 bg-red-100 text-red-800 rounded">
-                {tableNumber === '0' ? (
-                  <p><strong>Tipo:</strong> Domicilio (Seleccionado)</p>
-                ) : (
-                  <>
-                    <p>La mesa {tableNumber} no está disponible o no existe</p>
-                    <p className="font-semibold">❌ No se puede seleccionar esta mesa</p>
-                  </>
-                )}
-              </div>
-            )}
-          </div>
-        )}
       </div>
 
       {/* Sección de Productos */}
@@ -391,7 +315,6 @@ const FormOrder = ({ onSubmit, onCancel }) => {
         <button
           type="submit"
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          disabled={!formData.table} // Deshabilitar si no hay mesa seleccionada
         >
           Guardar
         </button>

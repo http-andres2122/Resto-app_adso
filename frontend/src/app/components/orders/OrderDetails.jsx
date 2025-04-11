@@ -18,7 +18,7 @@ export default function OrderDetails() {
     //editar pedido
     const onEdit = () => {
         setEditOrder(true);
-        //setOrderToEdit(order);
+        setOrderToEdit(order);
     }
 
     // Función para determinar el tipo de servicio

@@ -56,7 +56,17 @@ const useOrderStore = create((set, get) => ({
             console.error("Error al cargar los pedidos:", error);
         }
     },
-    
+
+    //update order
+    updateOrder: async (id, data) => {
+        try {
+            const response = await orderService.updatePedido(id, data);
+            console.log("Pedido actualizado:", response);
+            set({ editOrder: false, orderToEdit: [] });
+        } catch (error) {
+            console.error("Error al actualizar el pedido:", error);
+        }
+    },    
 }));
 
 export default useOrderStore;

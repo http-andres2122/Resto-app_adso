@@ -6,7 +6,7 @@ import { API_ENDPOINTS } from "../../../config/endpoints";
 export const getMesas = async () => {
   try {
     const response = await axiosInstance.get(API_ENDPOINTS.getMesas);
-    console.log("Mesas cargadas service:", response.data);
+    //console.log("Mesas cargadas service:", response.data);
     return response.data;
   } catch (error) {
     throw new Error("Error al obtener mesas");

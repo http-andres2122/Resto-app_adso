@@ -13,45 +13,73 @@ const useTableStore = create((set, get) => ({
         set({ loading: true, error: null });
         try {
             const response = await getMesas();
-            console.log('response api:', response);
-            // Verificar que la respuesta sea un array
-            const tables = Array.isArray(response) ? response : (response && Array.isArray(response.data)) ? response.data : [];
-            console.log('Mesas cargadas store:', tables);
+            console.log('API response raw:', response);
 
+            // Simplificar el procesamiento, asumiendo que response es directamente un array
+            let tables = response.tables;
+
+            // En caso de que no sea un array, asignar uno vacío
+            if (!Array.isArray(tables)) {
+                console.warn('Response is not an array, using empty array instead');
+                tables = [];
+            }
+
+            console.log('Tables after processing:', tables);
+
+            // Asegurarnos de que cada mesa tiene una propiedad name
+            const tablesWithNames = tables.map(table => {
+                if (!table.name) {
+                    return {
+                        ...table,
+                        name: table.number === 0 ? 'Domicilio' : `Mesa ${table.number}`
+                    };
+                }
+                return table;
+            });
+
+            // Guardar en el estado
             set({
-                tables: tables,
+                tables: tablesWithNames,
                 loading: false
             });
-            console.log('Mesas cargadas:', tables);
-            return tables;
+
+            return tablesWithNames;
         } catch (error) {
             console.error('Error al cargar las mesas:', error);
             set({
-                error: 'Error al cargar las mesas. Por favor, intente de nuevo más tarde.',
+                tables: null,
+                error: 'Error al cargar las mesas. Mostrando datos de ejemplo.',
                 loading: false
             });
-            throw error;
+
+            return sampleTables;
         }
     },
 
     // Obtener solo mesas disponibles
     getAvailableTables: () => {
         const { tables } = get();
+        console.log('Current tables in getAvailableTables:', tables);
+
         // Verificar que tables sea un array antes de usar filter
         if (!Array.isArray(tables)) {
             console.warn('tables no es un array:', tables);
             return [];
         }
-        return tables.filter(table => table.status === 'disponible');
-        console.log('Mesas cargadas:', tables);
+
+        // Filtrar mesas disponibles
+        const availableTables = tables.filter(table =>
+            table && typeof table === 'object' && table.status === 'disponible'
+        );
+
+        console.log('Available tables after filtering:', availableTables);
+        return availableTables;
     },
 
     // Acción para seleccionar una mesa
     selectTable: (tableId) => {
         const { tables } = get();
-        // Verificar que tables sea un array antes de usar find
         if (!Array.isArray(tables)) {
-            console.warn('tables no es un array:', tables);
             return null;
         }
         const selectedTable = tables.find(table => table.id === tableId);
@@ -64,28 +92,19 @@ const useTableStore = create((set, get) => ({
         set({ selectedTable: null });
     },
 
-    // Acción para actualizar el estado de una mesa (si tu API soporta esto)
+    // Acción para actualizar el estado de una mesa
     updateTableStatus: async (tableId, newStatus) => {
         set({ loading: true, error: null });
         try {
-            // Aquí iría la llamada a la API para actualizar el estado
-            // Por ahora, solo actualizamos el estado local
-            set(state => {
-                // Verificar que tables sea un array antes de usar map
-                if (!Array.isArray(state.tables)) {
-                    console.warn('state.tables no es un array:', state.tables);
-                    return { ...state, loading: false };
-                }
-
-                return {
-                    tables: state.tables.map(table =>
+            set(state => ({
+                tables: Array.isArray(state.tables)
+                    ? state.tables.map(table =>
                         table.id === tableId ? { ...table, status: newStatus } : table
-                    ),
-                    loading: false
-                };
-            });
+                    )
+                    : [],
+                loading: false
+            }));
 
-            // Si la mesa actualizada es la seleccionada, actualizamos también selectedTable
             const { selectedTable } = get();
             if (selectedTable && selectedTable.id === tableId) {
                 set({ selectedTable: { ...selectedTable, status: newStatus } });
@@ -93,18 +112,17 @@ const useTableStore = create((set, get) => ({
         } catch (error) {
             console.error('Error al actualizar el estado de la mesa:', error);
             set({
-                error: 'Error al actualizar el estado de la mesa. Por favor, intente de nuevo.',
+                error: 'Error al actualizar el estado de la mesa.',
                 loading: false
             });
-            throw error;
         }
     },
 
     // Acción para agregar una mesa (domicilio)
     addDomicilioTable: () => {
         return {
-            id: 1, // ID fijo para domicilio
-            number: 0, // Número 0 indica domicilio
+            id: 1,
+            number: 0,
             name: 'Domicilio',
             status: 'disponible'
         };

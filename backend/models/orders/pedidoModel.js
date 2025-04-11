@@ -31,7 +31,7 @@ const pedido = {
   },
 
   /* 
-  New methods and fuctions for products 
+  New methods and functions for products 
   */
 
   // Obtener órdenes
@@ -39,9 +39,7 @@ const pedido = {
     const sql = `
     SELECT 
       p.id,
-      p.table_id,
-      m.numero AS table_number,
-      m.capacidad AS table_capacity,
+      p.table_num,
       p.customer_id,
       u.email AS customer_email,
       u.full_name AS customer_username,
@@ -56,8 +54,6 @@ const pedido = {
     FROM 
       pedidos p
     LEFT JOIN 
-      mesas m ON p.table_id = m.id
-    LEFT JOIN 
       usuarios u ON p.customer_id = u.id;`;
 
     connection.query(sql, (err, result) => {
@@ -68,15 +64,13 @@ const pedido = {
       // Transformar los resultados
       const transformedOrders = result.map((order) => ({
         id: order.id,
-        table: order.table_id
-          ? [
-              {
-                id: order.table_id,
-                number: order.table_number,
-                capacity: order.table_capacity,
-              },
-            ]
-          : [], // Si no hay table_id, devuelve un array vacío
+        table_num: order.table_num,
+        shippingAddress: order.shippingAddress,
+        items: order.items, // Ya es JSON, no necesita transformación adicional
+        total: order.total,
+        date: order.fecha,
+        status: order.status,
+        comments: order.comments,
         customer: order.customer_id
           ? {
               id: order.customer_id,
@@ -86,12 +80,6 @@ const pedido = {
               num_phone: order.customer_num_phone,
             }
           : null, // Si no hay customer_id, devuelve null
-        shippingAddress: order.shippingAddress,
-        items: order.items, // Ya es JSON, no necesita transformación adicional
-        total: order.total,
-        date: order.fecha,
-        status: order.status,
-        comments: order.comments,
       }));
       // Envolver las órdenes en un objeto con la clave "orders"
       const response = { orders: transformedOrders };
@@ -102,48 +90,148 @@ const pedido = {
 
   // Crear una orden
   createOrder: (orderData, callback) => {
-    const { num_doc, username, num_phone, isDelivery, shippingAddress, items, total, comments } = orderData;
-  
+    const {
+      num_doc,
+      username,
+      num_phone,
+      isDelivery,
+      shippingAddress,
+      items,
+      total,
+      comments,
+    } = orderData;
+
     // Paso 1: Cotejar o crear usuario
-    connection.query('SELECT id FROM usuarios WHERE num_doc = ?', [num_doc], (err, result) => {
-      if (err) return callback(err);
-  
-      let customer_id;
-      if (result.length > 0) {
-        customer_id = result[0].id; // Usuario existente
-      } else {
-        // Crear usuario pre-registrado
-        connection.query(
-          'INSERT INTO usuarios (num_doc, username, num_phone, is_fully_registered, role_id) VALUES (?, ?, ?, 0, 2)',
-          [num_doc, username || `guest_${num_doc}`, num_phone], // Si no hay username, usa un valor temporal
-          (err, result) => {
-            if (err) return callback(err);
-            customer_id = result.insertId;
-            createOrderWithCustomer(customer_id);
-          }
-        );
-        return;
+    connection.query(
+      "SELECT id FROM usuarios WHERE num_doc = ?",
+      [num_doc],
+      (err, result) => {
+        if (err) return callback(err);
+
+        let customer_id;
+        if (result.length > 0) {
+          customer_id = result[0].id; // Usuario existente
+        } else {
+          // Crear usuario pre-registrado
+          connection.query(
+            "INSERT INTO usuarios (num_doc, username, num_phone, is_fully_registered, role_id) VALUES (?, ?, ?, 0, 2)",
+            [num_doc, username || `guest_${num_doc}`, num_phone], // Si no hay username, usa un valor temporal
+            (err, result) => {
+              if (err) return callback(err);
+              customer_id = result.insertId;
+              createOrderWithCustomer(customer_id);
+            }
+          );
+          return;
+        }
+        createOrderWithCustomer(customer_id);
       }
-      createOrderWithCustomer(customer_id);
-    });
-  
+    );
+
     function createOrderWithCustomer(customer_id) {
       const table_id = isDelivery ? 1 : orderData.table_id; // 999 para "Domicilio"
       const sql = `
         INSERT INTO pedidos (table_id, customer_id, shippingAddress, items, total, status, comments)
         VALUES (?, ?, ?, ?, ?, 'pendiente', ?)
       `;
-      connection.query(sql, [table_id, customer_id, shippingAddress, JSON.stringify(items), total, comments], (err, result) => {
-        if (err) return callback(err);
-        callback(null, { order_id: result.insertId });
-      });
+      connection.query(
+        sql,
+        [
+          table_id,
+          customer_id,
+          shippingAddress,
+          JSON.stringify(items),
+          total,
+          comments,
+        ],
+        (err, result) => {
+          if (err) return callback(err);
+          callback(null, { order_id: result.insertId });
+        }
+      );
     }
   },
 
-  
+  // NUEVO MÉTODO: Actualizar una orden existente
+  updateOrder: (orderData, callback) => {
+    // Verificar si existe el pedido con el ID proporcionado
+    connection.query(
+      "SELECT id FROM pedidos WHERE id = ?",
+      [orderData.id],
+      (err, result) => {
+        if (err) return callback(err);
 
+        // Si no existe el pedido, devolver error
+        if (result.length === 0) {
+          return callback(
+            new Error(`No existe pedido con el ID ${orderData.id}`)
+          );
+        }
+
+        // Preparar los datos para actualizar
+        const {
+          id,
+          table_num,
+          customer_id,
+          status,
+          comments,
+          shippingAddress,
+          total,
+          items,
+        } = orderData;
+
+        // Asegurarse de que items sea un string JSON si es un objeto
+        const itemsToSave =
+          typeof items === "string" ? items : JSON.stringify(items);
+
+        // Consulta SQL para actualizar el pedido
+        const sql = `
+          UPDATE pedidos
+          SET 
+            table_num = ?,
+            customer_id = ?,
+            status = ?,
+            comments = ?,
+            shippingAddress = ?,
+            total = ?,
+            items = ?
+          WHERE id = ?
+        `;
+
+        // Ejecutar la actualización
+        connection.query(
+          sql,
+          [
+            table_num,
+            customer_id,
+            status,
+            comments || "",
+            shippingAddress || "",
+            total,
+            itemsToSave,
+            id,
+          ],
+          (err, result) => {
+            if (err) return callback(err);
+
+            // Verificar si se actualizó correctamente
+            if (result.affectedRows === 0) {
+              return callback(
+                new Error(`No se pudo actualizar el pedido con ID ${id}`)
+              );
+            }
+
+            // Devolver éxito
+            callback(null, {
+              success: true,
+              message: `Pedido ${id} actualizado correctamente`,
+              order_id: id,
+            });
+          }
+        );
+      }
+    );
+  },
 };
-
-
 
 export default pedido;

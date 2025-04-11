@@ -19,7 +19,7 @@ router.get("/:id", pedidoController.obtenerPedidoPorId);
 router.post("/", pedidoController.crearPedido); //auth rute
 
 // Actualizar un pedido existente
-router.put("/:id", pedidoController.actualizarPedido);
+router.put("/:id", pedidoController.updateOrder);
 
 // Eliminar un pedido
 router.delete("/:id", pedidoController.eliminarPedido);

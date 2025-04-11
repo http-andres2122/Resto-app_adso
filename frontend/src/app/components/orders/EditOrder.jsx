@@ -3,17 +3,18 @@ import FormOrders from "./FormOrders";
 import useOrderStore from "../../store/OrderStore";
 
 export default function EditOrder() {
-    const { setAddOrder, setEditOrder } = useOrderStore();
+    const { setAddOrder, setEditOrder, updateOrder } = useOrderStore();
 
 
     const onCancel = () => {
-        console.log("Cancelar");
+        //console.log("Cancelar");
         setEditOrder(false)
     }
 
     const onSubmit = (data) => {
         const order = { order: data };
-        console.log("Datos 4 :", order);
+        updateOrder(data.id, data);
+        console.log("Datos in editing order :", order);
     }
 
 

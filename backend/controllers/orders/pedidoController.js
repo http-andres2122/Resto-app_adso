@@ -141,6 +141,149 @@ const pedidoController = {
       res.status(200).json(result);
     });
   },
+
+  /**
+   * Actualiza una orden existente en la base de datos
+   *
+   * @param {Object} req - Objeto de solicitud Express
+   * @param {Object} req.params - Parámetros de la URL
+   * @param {string} req.params.id - ID de la orden a actualizar
+   * @param {Object} req.body - Datos de la orden a actualizar
+   * @param {string|number} req.body.table_num - Número o ID de la mesa
+   * @param {string|number} [req.body.customer_id] - ID del cliente (opcional)
+   * @param {string} req.body.status - Estado actual de la orden (Pendiente, Enviado, Cancelado, etc.)
+   * @param {string} [req.body.comments] - Comentarios adicionales sobre la orden
+   * @param {string} [req.body.shippingAddress] - Dirección de envío
+   * @param {number} req.body.total - Monto total de la orden
+   * @param {Array|string} req.body.items - Array de productos o string JSON con los productos
+   * @param {Object} res - Objeto de respuesta Express
+   *
+   * @returns {JSON} - Respuesta JSON con mensaje de éxito o error
+   *
+   * @example
+   * // Petición
+   * // PUT /api/orders/1
+   * {
+   *   "table_num": 3,
+   *   "customer_id": 2,
+   *   "status": "Enviado",
+   *   "comments": "Sin cebolla, extra queso",
+   *   "shippingAddress": "Calle 123 #45-67",
+   *   "total": 45000,
+   *   "items": [
+   *     {
+   *       "id": 1,
+   *       "name": "Hamburguesa",
+   *       "price": 15000,
+   *       "quantity": 2
+   *     },
+   *     {
+   *       "id": 3,
+   *       "name": "Refresco",
+   *       "price": 5000,
+   *       "quantity": 3
+   *     }
+   *   ]
+   * }
+   *
+   * // Respuesta exitosa
+   * {
+   *   "success": true,
+   *   "message": "Pedido 1 actualizado correctamente",
+   *   "order_id": 1
+   * }
+   *
+   * // Respuesta de error
+   * {
+   *   "message": "Error al actualizar la orden"
+   * }
+   */
+  updateOrder: (req, res) => {
+    try {
+      // Obtener el ID de la orden desde los parámetros
+      const id = parseInt(req.params.id);
+
+      if (!id || isNaN(id)) {
+        return res.status(400).json({
+          success: false,
+          message: "ID de orden inválido",
+        });
+      }
+
+      // Extraer datos del body
+      const {
+        table_num,
+        customer,
+        status,
+        comments,
+        shippingAddress,
+        total,
+        items,
+      } = req.body;
+
+      // Extraer el ID del cliente desde el objeto customer
+      const customer_id = customer?.id;
+
+      // Validaciones básicas
+      if (!status) {
+        return res.status(400).json({
+          success: false,
+          message: "El estado de la orden es requerido",
+        });
+      }
+
+      if (total === undefined || total === null) {
+        return res.status(400).json({
+          success: false,
+          message: "El total de la orden es requerido",
+        });
+      }
+
+      if (!items) {
+        return res.status(400).json({
+          success: false,
+          message: "Los items de la orden son requeridos",
+        });
+      }
+
+      // Crear objeto con datos a actualizar
+      const orderData = {
+        id,
+        table_num,
+        customer_id,
+        status,
+        comments,
+        shippingAddress,
+        total,
+        items,
+      };
+
+      // Llamar al modelo para actualizar la orden
+      pedido.updateOrder(orderData, (err, result) => {
+        if (err) {
+          console.error("Error al actualizar la orden:", err);
+          return res.status(500).json({
+            success: false,
+            message: "Error al actualizar la orden",
+            error: err.message,
+          });
+        }
+
+        return res.status(200).json({
+          success: true,
+          message: `Pedido ${id} actualizado correctamente`,
+          order_id: id,
+        });
+      });
+    } catch (error) {
+      console.error("Error en updateOrder:", error);
+      return res.status(500).json({
+        success: false,
+        message: "Error interno del servidor",
+        error: error.message,
+      });
+    }
+  },
 };
 
 export default pedidoController;

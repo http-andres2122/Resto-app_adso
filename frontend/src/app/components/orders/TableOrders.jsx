@@ -14,7 +14,7 @@ export default function TableOrders() {
         ...order,
         id: order.id,
         customer: order.customer,
-        items: order.items.length,
+        items_lenght: order.items.length,
         total: order.total,
         status: order.status,
         date: order.date,
@@ -24,7 +24,7 @@ export default function TableOrders() {
     const handleDetailsClick = (order) => {
         setOrderToEdit(order);
         setDetailsOrder(true);
-        console.log("Detalles del pedido:", order);
+        //console.log("Detalles del pedido:", order);
     }
 
     //funcion para manejar el click en cancelar
@@ -46,7 +46,7 @@ export default function TableOrders() {
         },
         {
             header: "Ítems",
-            accessorKey: "items",
+            accessorKey: "items_lenght",
             meta: { align: "text-left" },
         },
         {

@@ -1,10 +1,11 @@
 import React, { useMemo, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import DynamicTable from "../shared/DynamicTable";
 import useOrderStore from "../../store/OrderStore";
 
 export default function TableOrders() {
-    //store zustand
-    const { fetchOrders, orders, setOrderToEdit, setDetailsOrder } = useOrderStore();
+    const { fetchOrders, orders } = useOrderStore();
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchOrders();
@@ -20,19 +21,18 @@ export default function TableOrders() {
         date: order.date,
     }));
 
-    //funcion para manejar el click en detalles
+    // Función para manejar el click en detalles - ahora navega a una URL específica
     const handleDetailsClick = (order) => {
-        setOrderToEdit(order);
-        setDetailsOrder(true);
-        //console.log("Detalles del pedido:", order);
+        navigate(`/dashboard/orders/details/${order.id}`);
     }
 
-    //funcion para manejar el click en cancelar
+    // Función para manejar el click en cancelar
     const handleCancelClick = (order) => {
         console.log("Cancelar pedido:", order);
+        // Aquí podría implementarse la lógica para cambiar el estado del pedido a cancelado
     }
 
-    //configuracion de las columnas de la tabla
+    // Configuración de las columnas de la tabla
     const columnsConfig = useMemo(() => [
         {
             header: "ID Pedido",
@@ -82,22 +82,22 @@ export default function TableOrders() {
         },
         {
             header: "Acciones",
-            // Botones para detalles y cancelar
+            // Botones para detalles y cancelar (eliminado el botón de editar)
             cell: ({ row }) => (
                 <div className="flex justify-center space-x-2">
                     <button
                         onClick={() => handleDetailsClick(row.original)}
-                        className="px-4 py-2 text-sm bg-blue-500 dark:bg-blue-600 text-white rounded hover:bg-blue-600 dark:hover:bg-blue-500">
+                        className="px-3 py-1 text-sm bg-blue-500 dark:bg-blue-600 text-white rounded hover:bg-blue-600 dark:hover:bg-blue-500">
                         Detalles
                     </button>
                     <button
                         onClick={() => handleCancelClick(row.original)}
-                        className="ml-2 px-4 py-2 text-sm bg-red-500 dark:bg-red-600 text-white rounded hover:bg-red-600 dark:hover:bg-red-500">
+                        className="px-3 py-1 text-sm bg-red-500 dark:bg-red-600 text-white rounded hover:bg-red-600 dark:hover:bg-red-500">
                         Cancelar
                     </button>
                 </div>
             ),
-            meta: { align: "text-left" },
+            meta: { align: "text-center" },
         },
     ], [handleDetailsClick, handleCancelClick]);
 

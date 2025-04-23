@@ -2,16 +2,6 @@
 import axiosInstance from "../../../config/axios.config";
 import { API_ENDPOINTS } from "../../../config/endpoints";
 
-// Obtener todos los pedidos
-export const getPedidos = async () => {
-  try {
-    const response = await axiosInstance.get(API_ENDPOINTS.getPedidos);
-    return response.data;
-  } catch (error) {
-    throw new Error("Error al obtener pedidos");
-  }
-};
-
 // Obtener un pedido por ID
 export const getPedidoById = async (id) => {
   try {

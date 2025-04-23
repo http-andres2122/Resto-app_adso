@@ -9,6 +9,7 @@ const useProductStore = create((set, get) => ({
   showAddProduct: false,
   showEditProduct: false,
   productToEdit: null,
+  lastFetch: null, // Timestamp de la última carga
 
   // opcion de mostrar el formulario de agregar producto
   setShowAddProduct: (value) => {
@@ -33,9 +34,12 @@ const useProductStore = create((set, get) => ({
 
   // Obtener productos desde la API
   fetchProducts: async () => {
+    const { lastFetch } = get();
+    const now = Date.now();
+    if (lastFetch && now - lastFetch < 60000) return; // Evita recargar si los datos tienen menos de 1 minuto
     try {
       const data = await productoService.getProductos();
-      set({ products: data }); // Aquí asignamos `data` directamente
+      set({ products: data, lastFetch: now }); // Actualiza productos y timestamp
       console.log("Productos cargados:", data);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -60,40 +64,33 @@ const useProductStore = create((set, get) => ({
 
   // Editar producto
   editProduct: async (id, updatedProduct) => {
+    console.log("ID del producto a editar:", id);
+    console.log("Datos del producto a editar:", updatedProduct);
     try {
-      // Obtener las categorías del estado
-      const categories = get().categories; // Asegúrate de que 'categories' esté en tu estado inicial de Zustand
-      console.log("categories", categories);
-
-      // Encontrar el nombre de la categoría basado en el categoria_id
-      const category = categories.find(cat => cat.id === updatedProduct.categoria_id);
-      console.log("category", category);
-      const categoria_nombre = category ? category.nombre : "Sin categoría";
-      console.log("categoria_nombre", categoria_nombre);
-
-      // Crear una nueva versión de updatedProduct con el categoria_nombre actualizado
-      const updatedProductWithCategory = {
-        ...updatedProduct,
-        categoria_nombre: categoria_nombre
-      };
-
       // Actualizar en el servidor
-      const data = await productoService.updateProducto(id, updatedProductWithCategory);
-      console.log("array update product", updatedProductWithCategory);
+      const data = await productoService.updateProducto(id, updatedProduct);
 
-      // Actualizar el estado
+      // Actualizar el estado local
       set((state) => {
-        const updatedProducts = state.products.map((product) =>
-          product.id === id ? { ...product, ...updatedProductWithCategory } : product
-        );
-        console.log("update products", updatedProducts);
-        console.log("Producto editado en el servidor:", data);
+        const updatedProducts = state.products.map((product) => {
+          if (product.id === updatedProduct.id) {
+            //console.log("Producto editado:", product);
+            return { ...updatedProduct }; // Sustituir el producto con el actualizado
+          }
+          return product; // Mantener los productos que no coinciden
+        });
+        //console.log("Productos actualizados:", updatedProducts);
         return { products: updatedProducts };
       });
 
+      // Depurar el estado de products después de la actualización
+      console.log("Estado actualizado de products:", get().products);
+
+      console.log("Producto editado en el servidor y actualizado localmente:", data);
       return data;
     } catch (error) {
-      console.error("Error editing product:", error);
+      console.error("Error al editar el producto:", error);
+      throw error; // Re-lanza el error para manejarlo en el componente
     }
   },
 

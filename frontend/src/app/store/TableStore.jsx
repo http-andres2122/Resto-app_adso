@@ -7,9 +7,13 @@ const useTableStore = create((set, get) => ({
     loading: false,
     error: null,
     selectedTable: null,
+    lastFetch: null, // Timestamp de la última carga
 
     // Acción para obtener todas las mesas
     fetchTables: async () => {
+        const { lastFetch } = get();
+        const now = Date.now();
+        if (lastFetch && now - lastFetch < 60000) return; // Evita recargar si los datos tienen menos de 1 minuto
         set({ loading: true, error: null });
         try {
             const response = await getMesas();
@@ -40,7 +44,8 @@ const useTableStore = create((set, get) => ({
             // Guardar en el estado
             set({
                 tables: tablesWithNames,
-                loading: false
+                loading: false,
+                lastFetch: now
             });
 
             return tablesWithNames;

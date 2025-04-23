@@ -1,63 +1,39 @@
-import React, { useState } from "react";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import TableOrders from "../../../app/components/orders/TableOrders";
-import useOrderStore from "../../../app/store/OrderStore.jsx";
-import AddOrder from "../../../app/components/orders/AddOrder";
-import OrderDetails from "../../../app/components/orders/OrderDetails";
-import EditOrder from "../../../app/components/orders/EditOrder";
 
 export default function Orders() {
-    const { addOrder, setAddOrder, editOrder, detailsOrder, setOrderToDetails } = useOrderStore();
+    const navigate = useNavigate();
 
+    // Navegar a la página de agregar pedido
+    const handleAddOrderClick = () => {
+        navigate("/dashboard/orders/add");
+    };
 
     return (
         // Contenedor de la página
         <div className="p-6 rounded-lg shadow-md bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200">
             {/* Página */}
             <div>
-
                 {/* Título */}
-                <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-200 mb-6">Gestión de Pedidos</h2>
-                {/* Botón para agregar pedido */}
-                <div className="mb-4">
-                    {/* Muestra el botón solo si editOrder es falso */}
-                    {!addOrder && !editOrder && !detailsOrder && (
-                        <button
-                            className="px-6 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-400"
-                            onClick={() => setAddOrder(true)} // Muestra el formulario al hacer clic
-                        >
-                            + Agregar Pedido
-                        </button>
-                    )}
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-3xl font-bold text-gray-800 dark:text-gray-200">Gestión de Pedidos</h2>
                 </div>
 
-                {/* Muestra la tabla de pedidos */}
-                {!addOrder && !editOrder && !detailsOrder && (
-                    <div className="overflow-x-auto">
-                        <TableOrders />
-                    </div>
-                )}
+                {/* Botón para agregar pedido */}
+                <div className="mb-4">
+                    <button
+                        className="px-6 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-400"
+                        onClick={handleAddOrderClick}
+                    >
+                        + Agregar Pedido
+                    </button>
+                </div>
 
-
-                {/* Muestra el formulario de agregar pedido */}
-                {addOrder && (
-                    <div className="mt-4">
-                        <AddOrder />
-                    </div>
-                )}
-
-                {/* Muestra detalles del pedido*/}
-                {detailsOrder && (
-                    <div className="mt-4">
-                        <OrderDetails />
-                    </div>
-                )}
-
-                {/* Muestra el formulario de editar pedido */}
-                {editOrder && (
-                    <div className="mt-4">
-                        <EditOrder />
-                    </div>
-                )}
+                {/* Tabla de pedidos */}
+                <div className="overflow-x-auto">
+                    <TableOrders />
+                </div>
             </div>
         </div>
     );

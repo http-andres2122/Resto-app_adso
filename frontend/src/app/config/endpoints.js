@@ -30,8 +30,7 @@ export const API_ENDPOINTS = {
   deleteProducto: (id) => `/productos/deleteProduct/${id}`,
 
   // Pedidos
-  getPedidos: "/pedidos",
-  getOrders: "/pedidos/orders",
+  getOrders: "/pedidos/",
   getPedidoById: (id) => `/pedidos/${id}`,
   createPedido: "/pedidos",
   updatePedido: (id) => `/pedidos/${id}`,

@@ -12,6 +12,8 @@ const useOrderStore = create((set, get) => ({
     editOrder: false,
     //estado para los detalles del formulario
     detailsOrder: false,
+    // Timestamp de la última carga
+    lastFetch: null,
 
     //opcion de mostrar el formulario de agregar pedido
     setAddOrder: (value) => {
@@ -36,6 +38,9 @@ const useOrderStore = create((set, get) => ({
 
     //get orders
     fetchOrders: async () => {
+        const { lastFetch } = get();
+        const now = Date.now();
+        if (lastFetch && now - lastFetch < 60000) return; // Evita recargar si los datos tienen menos de 1 minuto
         try {
             const data = await orderService.getOrders();
             const formattedOrders = data.orders.map(order => ({
@@ -50,7 +55,7 @@ const useOrderStore = create((set, get) => ({
                     hour12: true
                 })
             }));
-            set({ orders: formattedOrders });
+            set({ orders: formattedOrders, lastFetch: now });
             console.log("Pedidos cargados:", formattedOrders);
         } catch (error) {
             console.error("Error al cargar los pedidos:", error);
@@ -62,6 +67,11 @@ const useOrderStore = create((set, get) => ({
         try {
             const response = await orderService.createPedido(data);
             console.log("Pedido creado:", response);
+
+            // Actualizar el estado local después de crear una orden
+            const { fetchOrders } = get();
+            await fetchOrders(); // Recargar las órdenes para incluir la nueva
+
             set({ addOrder: false });
         } catch (error) {
             console.error("Error al crear el pedido:", error);
@@ -73,11 +83,37 @@ const useOrderStore = create((set, get) => ({
         try {
             const response = await orderService.updatePedido(id, data);
             console.log("Pedido actualizado:", response);
-            set({ editOrder: false, orderToEdit: [] });
+
+            // Actualizar el estado local después de actualizar en el backend
+            const { orders } = get();
+            const updatedOrders = orders.map(order => {
+                if (order.id === id || order.id === parseInt(id)) {
+                    return {
+                        ...order,
+                        ...data
+                    };
+                }
+                return order;
+            });
+
+            set({
+                orders: updatedOrders,
+                editOrder: false,
+                orderToEdit: []
+            });
+
+            console.log("Estado local actualizado con éxito");
         } catch (error) {
             console.error("Error al actualizar el pedido:", error);
         }
-    },    
+    },
+
+    // Actualizar el estado local forzando un nuevo fetch
+    refreshOrders: async () => {
+        set({ lastFetch: null });
+        const { fetchOrders } = get();
+        await fetchOrders();
+    }
 }));
 
 export default useOrderStore;

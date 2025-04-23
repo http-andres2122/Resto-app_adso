@@ -33,7 +33,17 @@ function CategorySelector({ selectCategory, initialSelectedCategoryId }) {
     const numericValue = parseInt(value, 10); // Aseguramos que el valor sea un número
     console.log("Nueva categoría seleccionada:", numericValue);
     setSelectedCategory(numericValue); // guardamos el id de la categoría seleccionada
-    selectCategory(numericValue); // Pasamos el id de la categoría al componente padre
+
+    // Encontrar la categoría completa para obtener el nombre
+    const selectedCategoryData = categories.find(cat => cat.id === numericValue);
+
+    if (selectedCategoryData) {
+      // Pasamos tanto el id como el nombre de la categoría al componente padre
+      selectCategory(numericValue, selectedCategoryData.nombre);
+    } else {
+      // Si no se encuentra la categoría, solo pasamos el ID
+      selectCategory(numericValue, "");
+    }
   };
 
   const handleAddOption = async (name) => {
@@ -54,6 +64,8 @@ function CategorySelector({ selectCategory, initialSelectedCategoryId }) {
 
       if (addedCategory && addedCategory.id) {
         setSelectedCategory(addedCategory.id); // Seleccionamos la nueva categoría automáticamente
+        // Pasamos tanto el id como el nombre de la nueva categoría al componente padre
+        selectCategory(addedCategory.id, addedCategory.nombre);
       }
     } catch (error) {
       console.error("Error al agregar la categoría:", error);
@@ -83,7 +95,7 @@ function CategorySelector({ selectCategory, initialSelectedCategoryId }) {
         selectedValue={selectedCategory} // Solo se necesita el id
         onChange={handleSelectChange} // Solo actualiza el id
         label="Categoría" // Etiqueta del selector
-        placeholder="Seleccione una categoría" // Texto por defecto
+        placeholder="Seleccione una categoría " // Texto por defecto
       />
 
       {/* Botones para agregar o eliminar */}

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import useProductStore from '../../store/ProductStore';
 import useOrderStore from '../../store/OrderStore';
-import useTableStore from '../../store/TableStore';
 
 // Definiendo un objeto con los estados posibles para mayor escalabilidad
 const ORDER_STATES = {
@@ -12,9 +11,8 @@ const ORDER_STATES = {
   CANCELLED: { value: 'Cancelado', label: 'Cancelado' }
 };
 
-const FormOrder = ({ onSubmit, onCancel }) => {
+const FormOrder = ({ initialOrder = null, onSubmit, onCancel, isEditing = false }) => {
   const { products, fetchProducts } = useProductStore();
-  const { orderToEdit, editOrder } = useOrderStore();
 
   const [formData, setFormData] = useState({
     shippingAddress: '',
@@ -30,30 +28,25 @@ const FormOrder = ({ onSubmit, onCancel }) => {
     table_num: '',
   });
 
+  // Usar initialOrder para inicializar el formulario cuando estamos editando
   useEffect(() => {
-    if (editOrder && orderToEdit) {
-      console.log("Pedido a editar:", orderToEdit);
+    if (isEditing && initialOrder) {
+      console.log("Pedido a editar desde props:", initialOrder);
       const order = {
-        ...orderToEdit,
-        items: orderToEdit.items === 0 ? [] : orderToEdit.items,
-
+        ...initialOrder,
+        items: initialOrder.items && initialOrder.items.length > 0 ? initialOrder.items : [],
+        // Asegurarnos de que table_num sea un número o string simple, no un array
+        table_num: typeof initialOrder.table_num === 'number' ?
+          initialOrder.table_num :
+          (initialOrder.table_num || '')
       };
       setFormData(order);
-      //console.log("use effect form orders", order);
     }
-  }, [editOrder]);
+  }, [initialOrder, isEditing]);
 
   useEffect(() => {
     fetchProducts();
-    //fetchTables();
-    return () => {
-      // Limpiar la selección cuando se desmonte el componente
-      //clearSelectedTable();
-      null
-    };
   }, []);
-
-  console.log("data user form", formData);
 
   // Resto del código para productos, categorías, etc.
   const [selectedCategory, setSelectedCategory] = useState('Todas');
@@ -137,7 +130,7 @@ const FormOrder = ({ onSubmit, onCancel }) => {
 
   const handleCustomerChange = (e) => {
     // Solo permitir cambios si no estamos en modo edición
-    if (!editOrder) {
+    if (!isEditing) {
       const { name, value } = e.target;
       setFormData((prev) => ({
         ...prev,
@@ -151,7 +144,6 @@ const FormOrder = ({ onSubmit, onCancel }) => {
     onSubmit(formData);
   };
 
-
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       {/* Información del Cliente */}
@@ -162,7 +154,7 @@ const FormOrder = ({ onSubmit, onCancel }) => {
           name="full_name"
           value={formData.customer.full_name}
           onChange={handleCustomerChange}
-          readOnly={editOrder}
+          readOnly={isEditing}
           className="w-full p-2 border rounded"
         />
       </div>
@@ -173,7 +165,7 @@ const FormOrder = ({ onSubmit, onCancel }) => {
           name="num_doc"
           value={formData.customer.num_doc}
           onChange={handleCustomerChange}
-          readOnly={editOrder}
+          readOnly={isEditing}
           className="w-full p-2 border rounded"
         />
       </div>
@@ -185,7 +177,7 @@ const FormOrder = ({ onSubmit, onCancel }) => {
           name="email"
           value={formData.customer.email}
           onChange={handleCustomerChange}
-          readOnly={editOrder}
+          readOnly={isEditing}
           className="w-full p-2 border rounded"
         />
       </div>
@@ -227,7 +219,7 @@ const FormOrder = ({ onSubmit, onCancel }) => {
         </select>
       </div>
 
-      {/* Mesa con búsqueda numérica */}
+      {/* Mesa como número simple */}
       <div>
         <label>Mesa</label>
         <div className="flex space-x-2">
@@ -241,13 +233,12 @@ const FormOrder = ({ onSubmit, onCancel }) => {
           />
           <button
             type="button"
-            onClick={() => setFormData({ ...formData, table_num: 'Domicilio' })}
+            onClick={() => setFormData({ ...formData, table_num: 0 })}
             className="bg-yellow-500 hover:bg-yellow-600 text-white py-2 px-4 rounded"
           >
             Domicilio
           </button>
         </div>
-
       </div>
 
       {/* Sección de Productos */}
@@ -326,7 +317,7 @@ const FormOrder = ({ onSubmit, onCancel }) => {
           type="submit"
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         >
-          Guardar
+          {isEditing ? 'Actualizar Pedido' : 'Guardar'}
         </button>
         <button
           type="button"

@@ -14,7 +14,7 @@ const DynamicForm = forwardRef(({ fields, onSubmit, initialValues = {} }, ref) =
   // Cada vez que `initialValues` cambia, reseteamos el formulario con los nuevos valores
   useEffect(() => {
     reset(initialValues);
-  }, [initialValues, reset]);
+  }, []); // Removed `reset` from dependency array to prevent infinite loop
 
   return (
     <form ref={ref} onSubmit={handleSubmit(onSubmit)}>

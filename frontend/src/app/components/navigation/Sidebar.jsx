@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import MenuItems from "./MenuItems";
 
-export default function Sidebar({ setActiveSection, activeSection, isOpen, setIsSidebarOpen }) {
+export default function Sidebar({ activeSection, isOpen, setIsSidebarOpen }) {
   const [menuOpen, setMenuOpen] = useState(isOpen);
 
   useEffect(() => {
@@ -24,11 +25,12 @@ export default function Sidebar({ setActiveSection, activeSection, isOpen, setIs
 
       {/* Título y Menú (unificados para móvil y escritorio) */}
       <div className="flex-1 flex flex-col overflow-y-auto">
-        <div className="p-4 text-2xl font-bold hidden lg:block">Restaurant App</div> {/* Título en escritorio */}
+        <Link to="/dashboard" className="p-4">
+          <div className="text-2xl font-bold hidden lg:block">Restaurant App</div> {/* Título en escritorio */}
+        </Link>
         <ul>
           <MenuItems
             activeSection={activeSection}
-            setActiveSection={setActiveSection}
             setMenuOpen={setIsSidebarOpen}
           />
         </ul>

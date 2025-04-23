@@ -1,70 +1,36 @@
-import React, { useState, useEffect } from "react";
-import AddProduct from "../../../app/components/products/AddProduct.jsx";
-import EditProduct from "../../../app/components/products/EditProduct.jsx";
-import TableProducts from "../../../app/components/products/TableProducts.jsx";
-import useProductStore from "../../../app/store/ProductStore.jsx";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import TableProducts from "../../../app/components/products/TableProducts";
+
 export default function Products() {
-  const [editProduct, setEditProduct] = useState(null);
-  const [products, setProducts] = useState([]); // Estado para almacenar los productos
-  const [loading, setLoading] = useState(true); // Estado para indicar si se están cargando los datos
-  const [error, setError] = useState(null); // Estado para manejar errores
-  const { showAddProduct, setShowAddProduct } = useProductStore(); // Correcto
-  const { showEditProduct, setShowEditProduct } = useProductStore(); // Correcto
-  console.log("showAddProduct product:", showAddProduct);
-  // if (loading) {
-  //   return <div className="text-center py-4">Cargando productos...</div>;
-  // }
+  const navigate = useNavigate();
 
-  // if (error) {
-  //   return <div className="text-center text-red-500 py-4">{error}</div>;
-  // }
+  // Función para navegar a la página de agregar producto
+  const handleAddProductClick = () => {
+    navigate("/dashboard/products/add");
+  };
 
-  // if (!products || products.length === 0) {
-  //   return (
-  //     <div className="text-center py-4">No hay productos para mostrar.</div>
-  //   );
-  // }
   return (
     // Contenedor de la página
     <div className="p-6 rounded-lg shadow-md bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200">
-      {/* pagina  */}
+      {/* Título */}
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-3xl font-bold">Gestión de Productos</h2>
+      </div>
+
+      {/* Botón para agregar producto */}
+      <div className="mb-4">
+        <button
+          className="px-6 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-400"
+          onClick={handleAddProductClick}
+        >
+          + Agregar Producto
+        </button>
+      </div>
+
+      {/* Tabla de Productos */}
       <div>
-        {/* Título */}
-        <h2 className="text-3xl font-bold mb-6"> Gestión de Productos</h2>
-
-        {/* Botón para agregar producto */}
-        <div className="mb-4">
-          {/* muestra el botón solo si showAddProduct y showEditProduct son falsos */}
-          {!showAddProduct && !showEditProduct && (
-            <button
-              className="px-6 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-400"
-              onClick={() => setShowAddProduct(true)} // Muestra el formulario al hacer clic
-            >
-              + Agregar Producto
-            </button>
-          )}
-          {/* Muestra el formulario agreagar solo si showAddProduct es true y showEditProduct es false */}
-          {showAddProduct && !showEditProduct && (
-            <div className="mt-4">
-              {/* Agrega un margen superior */}
-              <AddProduct />
-            </div>
-          )}
-
-          {/* Muestra el formulario de editar solo si showEditProduct es true */}
-          {showEditProduct && (
-            <div className="mt-4">
-              {/* Agrega un margen superior */}
-              <EditProduct />
-            </div>
-          )}
-
-        </div>
-
-        {/* Tabla de Productos */}
-        <div>
-          <TableProducts />
-        </div>
+        <TableProducts />
       </div>
     </div>
   );

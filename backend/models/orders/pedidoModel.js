@@ -2,38 +2,6 @@
 import connection from "../../config/db.js"; // Conexión a la base de datos
 
 const pedido = {
-  obtenerPedidos: (callback) => {
-    connection.query("SELECT * FROM pedidos", callback);
-  },
-
-  obtenerPedidoPorId: (id, callback) => {
-    connection.query("SELECT * FROM pedidos WHERE id = ?", [id], callback);
-  },
-
-  crearPedido: (mesa_id, usuario_id, estado, observaciones, callback) => {
-    connection.query(
-      "INSERT INTO pedidos (mesa_id, usuario_id, estado, observaciones) VALUES (?, ?, ?, ?)",
-      [mesa_id, usuario_id, estado, observaciones],
-      callback
-    );
-  },
-
-  actualizarPedido: (id, estado, observaciones, callback) => {
-    connection.query(
-      "UPDATE pedidos SET estado = ?, observaciones = ? WHERE id = ?",
-      [estado, observaciones, id],
-      callback
-    );
-  },
-
-  eliminarPedido: (id) => {
-    connection.query("DELETE FROM pedidos WHERE id = ?", [id], callback);
-  },
-
-  /* 
-  New methods and functions for products 
-  */
-
   // Obtener órdenes
   getOrdersForm: (callback) => {
     const sql = `
@@ -228,11 +196,51 @@ const pedido = {
               );
             }
 
-            // Devolver éxito
-            callback(null, {
-              success: true,
-              message: `Pedido ${id} actualizado correctamente`,
-              order_id: id,
+            // Devolver solo datos básicos, sin formatear mensajes
+            callback(null, { 
+              id: id, 
+              updated: true,
+              affectedRows: result.affectedRows 
+            });
+          }
+        );
+      }
+    );
+  },
+
+  // Método para eliminar una orden
+  deleteOrder: (orderId, callback) => {
+    // Primero verificamos que el pedido exista
+    connection.query(
+      "SELECT id FROM pedidos WHERE id = ?",
+      [orderId],
+      (err, result) => {
+        if (err) return callback(err);
+
+        // Si no existe el pedido, devolver error
+        if (result.length === 0) {
+          return callback(new Error(`No existe pedido con el ID ${orderId}`));
+        }
+
+        // Si existe, procedemos a eliminarlo
+        connection.query(
+          "DELETE FROM pedidos WHERE id = ?",
+          [orderId],
+          (err, result) => {
+            if (err) return callback(err);
+
+            // Verificar si se eliminó correctamente
+            if (result.affectedRows === 0) {
+              return callback(
+                new Error(`No se pudo eliminar el pedido con ID ${orderId}`)
+              );
+            }
+
+            // Devolver solo el resultado básico
+            callback(null, { 
+              id: orderId, 
+              deleted: true,
+              affectedRows: result.affectedRows 
             });
           }
         );

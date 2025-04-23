@@ -1,10 +1,9 @@
 import React, { useRef, useState, useEffect } from "react";
-import { set } from "react-hook-form";
 import DynamicForm from "../shared/DynamicForm";
-import useProductStore from "../../store/ProductStore";
 import CategorySelector from "./CategorySelector";
+import useProductStore from "../../store/ProductStore";
 
-{ /* Campos del formulario de productos */ }
+// Campos del formulario de productos
 const fieldsProducto = [
   { name: "nombre", label: "Nombre", type: "text", required: true },
   { name: "descripcion", label: "Descripcion", type: "text", required: true },
@@ -12,66 +11,57 @@ const fieldsProducto = [
   { name: "stock", label: "Stock", type: "number", required: true },
 ];
 
-function FormProducts() {
-  { /* Store Zustand*/ }
-  const { addProduct, editProduct } = useProductStore();
-  const { setShowAddProduct, showAddProduct } = useProductStore();
-  const { setShowEditProduct, showEditProduct, productToEdit, clearProductToEdit } = useProductStore();
+// El componente ahora recibe props para manejar submit, cancel, valores iniciales y modo de edición
+function FormProducts({ onSubmit, onCancel, initialProduct, isEditing = false }) {
   const formRef = useRef();
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
-  const [isEditing, setIsEditing] = useState(false);
-  console.log("isEditing 1:", isEditing);
+  const [selectedCategoryName, setSelectedCategoryName] = useState("");
 
-  { /*Efecto para precargar datos cuando hay un producto a editar*/ }
+  // Usar fetchCategories para cargar categorías al inicio
+  const { fetchCategories } = useProductStore();
+
+  // Efecto para precargar datos cuando hay un producto a editar
   useEffect(() => {
-    if (productToEdit) {
-      console.log("Producto a editar:", productToEdit);
-      setSelectedCategoryId(productToEdit.categoria_id || ""); // Cargar categoría existente'
-      setIsEditing(true); //Establecer isEditing a true si hay un producto para editar
-    } else {
-      setIsEditing(false); //Establecer isEditing a false si no hay un producto
-    }
-  }, [productToEdit]);
+    // Cargar categorías al montar el componente
+    fetchCategories();
 
-  { /* Función para enviar el formulario */ }
-  const onSubmit = async (data) => {
+    // Si hay un producto inicial (modo edición), establecer la categoría
+    if (initialProduct && initialProduct.categoria_id) {
+      setSelectedCategoryId(initialProduct.categoria_id);
+
+      // Si existe el nombre de la categoría en el producto inicial, también lo guardamos
+      if (initialProduct.categoria_nombre) {
+        setSelectedCategoryName(initialProduct.categoria_nombre);
+      }
+    }
+  }, []);
+
+  // Función para enviar el formulario
+  const handleFormSubmit = async (data) => {
+    if (!selectedCategoryId) {
+      alert("Por favor seleccione una categoría");
+      return;
+    }
+
     const productData = {
       ...data,
-      categoria_id: selectedCategoryId
+      categoria_nombre: selectedCategoryName, // Asignar el nombre de la categoría
+      categoria_id: selectedCategoryId // Asignar el ID de la categoría
     };
 
-    try {
-      if (isEditing) {
-        // Si isEditing es true, se actualiza
-        await editProduct(productToEdit.id, productData);
-        console.log("Producto:", productData);
-        setShowEditProduct(false); //cerrar el formulario de edición
-        clearProductToEdit(); //limpiar el producto a editar
-      } else {
-        // Si no existe, se crea uno nuevo
-        await addProduct(productData);
-        console.log("Producto agregado con éxito");
-        setShowAddProduct(false); //cerrar el formulario de agregar
-      }
-    } catch (error) {
-      console.error("Error al guardar el producto:", error);
-    }
+    // Pasar los datos al manejador recibido por props
+    onSubmit(productData);
   };
-  { /* Función para cancelar la creación de un producto */ }
-  const onCancel = () => {
-    console.log("isEditing:", isEditing);
-    if (isEditing) {
-      setShowEditProduct(false);
-      clearProductToEdit();
-    } else {
-      setShowAddProduct(false);
-    }
-  };
+
   // Función para manejar el cambio de categoría
-  const handleCategoryChange = (category) => {
-    setSelectedCategoryId(category);
+  const handleCategoryChange = (id, name) => {
+    console.log("Categoría seleccionada:", id, name);
+
+    setSelectedCategoryId(id);
+    setSelectedCategoryName(name);
   };
-  // Función para enviar el formulario
+
+  // Función para enviar el formulario manualmente
   const handleSubmitForm = () => {
     if (formRef.current) {
       formRef.current.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
@@ -84,14 +74,14 @@ function FormProducts() {
       <DynamicForm
         ref={formRef}
         fields={fieldsProducto}
-        onSubmit={onSubmit}
-        initialValues={productToEdit} // Se pasan valores iniciales si es edición
+        onSubmit={handleFormSubmit}
+        initialValues={initialProduct} // Valores iniciales para edición
       />
 
       {/* Selector de categorías */}
       <CategorySelector
-        selectCategory={handleCategoryChange} // Función para manejar el cambio de categoría
-        initialSelectedCategoryId={selectedCategoryId}  // Categoría seleccionada inicialmente (si es edición)
+        selectCategory={handleCategoryChange}
+        initialSelectedCategoryId={selectedCategoryId}
       />
 
       {/* Botones */}
@@ -99,15 +89,15 @@ function FormProducts() {
         <button
           type="button"
           onClick={handleSubmitForm}
-          className="px-6 py-2 bg-blue-600 text-white font-semibold rounded"
+          className="px-6 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700"
         >
-          {isEditing ? "Actualizar Producto" : "+ Agregar Producto"}
+          {isEditing ? "Actualizar Producto" : "Agregar Producto"}
         </button>
 
         <button
           type="button"
           onClick={onCancel}
-          className="px-6 py-2 bg-gray-500 text-white font-semibold rounded"
+          className="px-6 py-2 bg-gray-500 text-white font-semibold rounded hover:bg-gray-600"
         >
           Cancelar
         </button>

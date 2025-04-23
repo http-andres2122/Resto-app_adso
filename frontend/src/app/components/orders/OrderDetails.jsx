@@ -1,24 +1,75 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import useOrderStore from '../../store/OrderStore';
 
-
 export default function OrderDetails() {
-    const { setEditOrder, fetchOrders, orders, orderToEdit, setDetailsOrder, setOrderToEdit } = useOrderStore();
-    console.log("order details module:", orderToEdit);
+    const { orderId } = useParams();
+    const navigate = useNavigate();
+    const { orders, fetchOrders } = useOrderStore();
 
-    const order = orderToEdit;
+    const [order, setOrder] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
+    // Cargar los datos del pedido usando el store de Zustand
+    useEffect(() => {
+        const getOrderFromStore = async () => {
+            if (!orderId) return;
 
-    //opcion para cerrar
-    const onCancel = () => {
-        console.log("Cancelar");
-        setDetailsOrder(false);
+            try {
+                setLoading(true);
+                // Primero aseguramos que tenemos los pedidos en el store
+                await fetchOrders();
+                // Buscamos el pedido por ID en el array de pedidos del store
+                const foundOrder = orders.find(o => o.id === parseInt(orderId) || o.id === orderId);
+
+                if (foundOrder) {
+                    setOrder(foundOrder);
+                    setLoading(false);
+                } else {
+                    throw new Error("Pedido no encontrado");
+                }
+            } catch (err) {
+                console.error("Error al cargar el pedido:", err);
+                setError("No se pudo cargar la información del pedido");
+                setLoading(false);
+            }
+        };
+
+        getOrderFromStore();
+    }, [orderId, orders, fetchOrders]);
+
+    // Función para navegar a la página de edición
+    const handleEditClick = () => {
+        navigate(`/dashboard/orders/edit/${orderId}`);
     };
 
-    //editar pedido
-    const onEdit = () => {
-        setEditOrder(true);
-        setOrderToEdit(order);
+    // Función para volver a la lista de pedidos
+    const handleBackToList = () => {
+        navigate('/dashboard/orders');
+    };
+
+    if (loading) {
+        return (
+            <div className="container mx-auto p-4">
+                <h2 className="text-2xl font-bold mb-4">Cargando detalles del pedido...</h2>
+            </div>
+        );
+    }
+
+    if (error || !order) {
+        return (
+            <div className="container mx-auto p-4">
+                <h2 className="text-2xl font-bold mb-4">Error</h2>
+                <div className="text-red-500">{error || "No se encontró el pedido"}</div>
+                <button
+                    onClick={handleBackToList}
+                    className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                >
+                    Volver a la lista
+                </button>
+            </div>
+        );
     }
 
     // Función para determinar el tipo de servicio
@@ -50,7 +101,9 @@ export default function OrderDetails() {
     return (
         <div className="container mx-auto p-4">
             {/* Encabezado del Pedido */}
-            <h1 className="text-2xl font-bold mb-4">Pedido #{order.id}</h1>
+            <div className="flex justify-between items-center mb-4">
+                <h1 className="text-2xl font-bold">Pedido #{order.id}</h1>
+            </div>
             <p className="text-gray-600 mb-2">Fecha: {order.date} | Estado: {order.status}</p>
 
             {/* Información del Cliente */}
@@ -71,14 +124,13 @@ export default function OrderDetails() {
                 <p>Observaciones: {order.comments || 'Sin observaciones'}</p>
             </div>
 
-
             {/* Detalles del Producto/Servicio */}
             <div className="bg-white rounded shadow p-4 mb-4">
                 <h2 className="text-lg font-semibold mb-2">Productos</h2>
                 <ul className="list-disc list-inside">
-                    {order.items.length > 0 ? (
-                        order.items.map((item) => (
-                            <li key={item.id}>
+                    {order.items && order.items.length > 0 ? (
+                        order.items.map((item, index) => (
+                            <li key={index}>
                                 {item.name} (Cantidad: {item.quantity}) - ${item.price * item.quantity}
                             </li>
                         ))
@@ -89,18 +141,11 @@ export default function OrderDetails() {
                 <p className="mt-2">Total: ${order.total}</p>
             </div>
 
-            {/* Historial del Pedido */}
-            {/* <div className="bg-white rounded shadow p-4 mb-4">
-                <h2 className="text-lg font-semibold mb-2">Historial</h2>
-                <p>Enviado el: {order.shippingDate} | Tracking: {order.trackingNumber}</p>
-            </div> */}
-
             {/* Opciones y Acciones */}
             <div className="flex space-x-2">
-
                 <button
                     className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-                    onClick={onEdit}
+                    onClick={handleEditClick}
                 >
                     Editar orden
                 </button>
@@ -108,19 +153,21 @@ export default function OrderDetails() {
                 <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                     Imprimir Factura
                 </button>
+
                 {order.status === 'Pendiente' && (
                     <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">
                         Cancelar Pedido
                     </button>
                 )}
+
                 <button
+                    onClick={handleBackToList}
                     className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
-                    onClick={onCancel}
                 >
                     Cerrar
                 </button>
             </div>
         </div>
     );
-};
+}
 

@@ -1,32 +1,30 @@
 import React, { useMemo, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import DynamicTable from "../shared/DynamicTable";
 import useProductStore from "../../store/ProductStore";
 
-function TableProducts() {
+function TableProducts({ onEditProduct }) {
   // Extraer productos y la función fetch desde Zustand
-  const { products, fetchProducts, deleteProduct, setProductToEdit, setShowEditProduct } = useProductStore();
+  const { products, fetchProducts, deleteProduct } = useProductStore();
+  const navigate = useNavigate();
+  console.log("table products:", products);
 
   // Cargar productos cuando el componente se monta
   useEffect(() => {
     fetchProducts();
-    console.log("useEffect1", products);
   }, []);
 
   // Función para manejar la acción de editar un producto
   const handleEditClick = (product) => {
-    setProductToEdit(product);
-    setShowEditProduct(true);
-    console.log("Editar producto in table component:", product);
-    // Aquí puedes abrir un modal, redireccionar a otra ruta, etc.
+    // En lugar de cambiar estados, navegamos a la ruta de edición
+    navigate(`/dashboard/products/edit/${product.id}`);
   };
 
   //funcion para manejar el eliminar un producto
   const handleDeleteClick = (product) => {
     if (window.confirm(`¿Estás seguro de eliminar el producto ${product.nombre}?`)) {
-      console.log("Eliminar producto in table component:", product);
       deleteProduct(product.id);
     }
-
   };
 
   // Configuración de las columnas de la tabla

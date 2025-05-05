@@ -17,6 +17,12 @@ const MenuItems = ({ activeSection, setMenuOpen }) => { // Ya no necesitamos set
         { id: "settings", label: "Ajustes", permission: PERMISSIONS.CONFIGURACION.VER, path: "/dashboard/settings" },
     ];
 
+    // Función para manejar la navegación
+    const handleNavigation = (path) => {
+        if (setMenuOpen) setMenuOpen(false); // Cierra el menú móvil si existe
+        // No necesitamos usar History ya que el Link se encargará de la navegación
+    };
+
     return (
         <>
             {/* Itera sobre los datos de los items del menú */}
@@ -25,22 +31,21 @@ const MenuItems = ({ activeSection, setMenuOpen }) => { // Ya no necesitamos set
                 // O si el usuario tiene el permiso requerido
                 if (!item.permission || hasPermission(item.permission)) {
                     return (
-                        // Renderiza un enlace para navegación real
-                        <li
-                            key={item.id} // Clave única para cada elemento en la lista
-                            className={`p-4 cursor-pointer hover:bg-blue-700 dark:hover:bg-gray-700 ${activeSection === item.id ? "bg-blue-800" : "" // Estilo para el item activo
-                                }`}
+                        <Link
+                            key={item.id}
+                            to={item.path}
+                            className="w-full block"
+                            onClick={() => {
+                                if (setMenuOpen) setMenuOpen(false); // Cierra el menú móvil, solo en móvil
+                            }}
                         >
-                            <Link
-                                to={item.path}
-                                className="w-full block"
-                                onClick={() => {
-                                    if (setMenuOpen) setMenuOpen(false); // Cierra el menú móvil, solo en móvil
-                                }}
+                            <li
+                                className={`p-4 cursor-pointer hover:bg-blue-700 dark:hover:bg-gray-700 ${activeSection === item.id ? "bg-blue-800" : "" // Estilo para el item activo
+                                    }`}
                             >
                                 {item.label} {/* Muestra la etiqueta del item */}
-                            </Link>
-                        </li>
+                            </li>
+                        </Link>
                     );
                 }
                 return null; // No renderiza el item si no tiene permiso

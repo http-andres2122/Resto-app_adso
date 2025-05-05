@@ -1,10 +1,10 @@
-import React, { useMemo, useEffect } from "react";
+ import React, { useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import DynamicTable from "../shared/DynamicTable";
 import useOrderStore from "../../store/OrderStore";
 
 export default function TableOrders() {
-    const { fetchOrders, orders } = useOrderStore();
+    const { fetchOrders, orders, deleteOrder } = useOrderStore();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -26,10 +26,15 @@ export default function TableOrders() {
         navigate(`/dashboard/orders/details/${order.id}`);
     }
 
-    // Función para manejar el click en cancelar
+    // Función para manejar el click en cancelar con confirmación simple
     const handleCancelClick = (order) => {
-        console.log("Cancelar pedido:", order);
-        // Aquí podría implementarse la lógica para cambiar el estado del pedido a cancelado
+        // Usar la confirmación nativa del navegador
+        const isConfirmed = window.confirm(`¿Estás seguro de que deseas cancelar el pedido #${order.id}?`);
+
+        if (isConfirmed) {
+            console.log("Cancelar pedido:", order);
+            deleteOrder(order.id);
+        }
     }
 
     // Configuración de las columnas de la tabla
@@ -67,7 +72,7 @@ export default function TableOrders() {
                         return <span className="text-yellow-500 font-semibold">{status}</span>;
                     case "En preparación":
                         return <span className="text-blue-500 font-semibold">{status}</span>;
-                    case "Entregado":
+                    case "Servido":
                         return <span className="text-green-500 font-semibold">{status}</span>;
                     default:
                         return <span className="text-gray-500">{status}</span>;
@@ -82,7 +87,6 @@ export default function TableOrders() {
         },
         {
             header: "Acciones",
-            // Botones para detalles y cancelar (eliminado el botón de editar)
             cell: ({ row }) => (
                 <div className="flex justify-center space-x-2">
                     <button

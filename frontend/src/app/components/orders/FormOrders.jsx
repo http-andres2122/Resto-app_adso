@@ -145,7 +145,12 @@ const FormOrder = ({ initialOrder = null, onSubmit, onCancel, isEditing = false 
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4"
+      autoComplete="new-password"
+      autoSave="off" // Agregar este atributo
+    >
       {/* Información del Cliente */}
       <div>
         <label>Nombre del Cliente</label>
@@ -156,6 +161,7 @@ const FormOrder = ({ initialOrder = null, onSubmit, onCancel, isEditing = false 
           onChange={handleCustomerChange}
           readOnly={isEditing}
           className="w-full p-2 border rounded"
+          autoComplete="off"
         />
       </div>
       <div>
@@ -167,6 +173,7 @@ const FormOrder = ({ initialOrder = null, onSubmit, onCancel, isEditing = false 
           onChange={handleCustomerChange}
           readOnly={isEditing}
           className="w-full p-2 border rounded"
+          autoComplete="off"
         />
       </div>
 
@@ -179,16 +186,21 @@ const FormOrder = ({ initialOrder = null, onSubmit, onCancel, isEditing = false 
           onChange={handleCustomerChange}
           readOnly={isEditing}
           className="w-full p-2 border rounded"
+          autoComplete="off"
         />
       </div>
       <div>
         <label>Dirección de Envío</label>
         <input
           type="text"
-          name="shippingAddress"
+          name="address-line1" // Cambiar el nombre para evitar reconocimiento
           value={formData.shippingAddress}
-          onChange={handleChange}
+          onChange={(e) => handleChange({ target: { name: 'shippingAddress', value: e.target.value } })}
           className="w-full p-2 border rounded"
+          autoComplete="new-password"
+          autoSave="off"
+          autoCorrect="off"
+          spellCheck="false"
         />
       </div>
       <div>
@@ -199,6 +211,7 @@ const FormOrder = ({ initialOrder = null, onSubmit, onCancel, isEditing = false 
           value={formData.comments}
           onChange={handleChange}
           className="w-full p-2 border rounded"
+          autoComplete="off"
         />
       </div>
 
@@ -230,6 +243,7 @@ const FormOrder = ({ initialOrder = null, onSubmit, onCancel, isEditing = false 
             onChange={handleChange}
             placeholder="Número de mesa"
             className="w-full p-2 border rounded"
+            autoComplete="off"
           />
           <button
             type="button"

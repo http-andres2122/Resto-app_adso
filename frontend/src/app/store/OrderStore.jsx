@@ -108,6 +108,23 @@ const useOrderStore = create((set, get) => ({
         }
     },
 
+    //delete order
+    deleteOrder: async (id) => {
+        try {
+            const response = await orderService.deletePedido(id);
+            console.log("Pedido eliminado:", response);
+
+            // Actualizar el estado local después de eliminar en el backend
+            const { orders } = get();
+            const updatedOrders = orders.filter(order => order.id !== id && order.id !== parseInt(id));
+
+            set({ orders: updatedOrders });
+            console.log("Estado local actualizado con éxito");
+        } catch (error) {
+            console.error("Error al eliminar el pedido:", error);
+        }
+    },
+
     // Actualizar el estado local forzando un nuevo fetch
     refreshOrders: async () => {
         set({ lastFetch: null });

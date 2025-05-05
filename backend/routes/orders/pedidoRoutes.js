@@ -1,8 +1,6 @@
 // routes/pedidoRoutes.js
 import express from "express";
 const router = express.Router();
-import auth from "../../middlewares/auth.js";
-import role from "../../middlewares/role.js";
 import pedidoController from "../../controllers/orders/pedidoController.js";
 
 // Obtener órdenes con detalles

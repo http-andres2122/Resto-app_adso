@@ -110,7 +110,7 @@ export default function OrderDetails() {
             <div className="bg-white rounded shadow p-4 mb-4">
                 <h2 className="text-lg font-semibold mb-2">Información del Cliente</h2>
                 <p>ID Interno cliente: {order.customer.id}</p>
-                <p>Nombre: {order.customer.username}</p>
+                <p>Nombre: {order.customer.full_name}</p>
                 <p>Identificación: {order.customer.num_doc}</p>
                 <p>Teléfono: {order.customer.num_phone}</p>
                 <p>Email: {order.customer.email}</p>

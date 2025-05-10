@@ -1,16 +1,18 @@
-import {Routes, Route} from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import Home from '../pages/Home';
 import NotFound from '../pages/NotFound';
 import Dashboard from '../pages/Dashboard';
 import Login from '../pages/Login';
+import Test from '../pages/test'
 import ProtectedRoute from './ProtectedRoute';
 import LoginError from '../pages/LoginError';
 
 export default function AppRoutes() {
     return (
-        
+
         <Routes>
             {/* Rutas Públicas */}
+            <Route path="/test" element={<Test />} />
             <Route path="/login" element={<Login />} />
             <Route path="/login-error" element={<LoginError />} />
             <Route path="/" element={<Home />} /> {/* Ruta Home pública */}

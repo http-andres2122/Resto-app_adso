@@ -10,12 +10,12 @@ router.get("/", categoriaController.obtenerCategorias);
 router.get("/:id", categoriaController.obtenerCategoriaPorId);
 
 // Crear una nueva categoría
-router.post("/", categoriaController.crearCategoria);
+router.post("/createCategory", categoriaController.crearCategoria);
 
 // Actualizar una categoría existente
-router.put("/:id", categoriaController.actualizarCategoria);
+router.put("/updateCategory/:id", categoriaController.actualizarCategoria);
 
 // Eliminar una categoría
-router.delete("/:id", categoriaController.eliminarCategoria);
+router.delete("/deleteCategory/:id", categoriaController.eliminarCategoria);
 
 export default router;

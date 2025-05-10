@@ -45,6 +45,7 @@ const categoriaController = {
       res.status(201).json({
         message: "Categoría creada exitosamente",
         id: result.insertId,
+        nombre: nombre,
       });
     });
   },
